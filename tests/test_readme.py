@@ -29,11 +29,11 @@ def test_readme_no_resume_leak():
 
 def test_readme_has_broadcast():
     t = Path("README.md").read_text(encoding="utf-8")
-    assert "STICKMAN SHOW" in t
-    assert "Don't look at him" in t
+    assert "SNAKE SHOW" in t
+    assert "He's hungry" in t
 
 
 def test_readme_dance_alt_title():
     t = Path("README.md").read_text(encoding="utf-8")
-    assert "Stickman hurrying like a mad man" in t
-    assert "Stickman dancing on loop" not in t
+    assert "Giant snake eats and leaves" in t
+    assert "Stickman hurrying like a mad man" not in t

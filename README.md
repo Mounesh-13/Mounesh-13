@@ -1,10 +1,10 @@
-<!-- Stick-man escape loop. Pure comedy, no bio. -->
+<!-- Giant snake eat-and-leave loop. -->
 <div align="center">
 
-# 📺 STICKMAN SHOW 📺
+# 🐍 SNAKE SHOW 🐍
 
-<picture><source media="(prefers-color-scheme: dark)" srcset="./assets/escape-dark.svg?v=5" /><img src="./assets/escape-light.svg?v=5" width="600" alt="Stickman hurrying like a mad man" title="Stickman hurrying like a mad man" /></picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="./assets/escape-dark.svg?v=6" /><img src="./assets/escape-light.svg?v=6" width="600" alt="Giant snake eats and leaves" title="Giant snake eats and leaves" /></picture>
 
-### *Don't look at him, he's trying to escape.*
+### *He's hungry.*
 
 </div>
