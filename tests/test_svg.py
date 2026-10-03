@@ -3,8 +3,9 @@ import re
 import xml.etree.ElementTree as ET
 
 FILES = [Path("assets/escape-light.svg"), Path("assets/escape-dark.svg")]
-BANNED_IDS = ["act2", "act3", "act4", "act5", "spinner", "blackout",
-              "knock-ripple", "mallet", "crack", "leak-drop", "big-red-button"]
+BANNED_IDS = ["dancer", "dance", "banana", "act2", "act3", "act4", "act5",
+              "spinner", "blackout", "knock-ripple", "mallet", "crack",
+              "leak-drop", "big-red-button"]
 
 
 def _read(p):
@@ -46,15 +47,16 @@ def test_master_clock_no_offset_begin():
         assert 'repeatCount="1"' not in t, f"{p} must not have one-shot repeatCount=1"
 
 
-def test_every_animate_is_master_clock_8s():
+def test_every_animate_is_master_clock_2s():
     for p in FILES:
         t = _read(p)
         tags = re.findall(r'<animate(?:Transform)?[^>]*>', t)
         assert len(tags) >= 10, f"{p} too few animates: {len(tags)}"
         for tag in tags:
             assert 'begin="0s"' in tag, f"{p} missing begin=0s: {tag[:120]}"
-            assert 'dur="8s"' in tag, f"{p} missing dur=8s: {tag[:120]}"
+            assert 'dur="2s"' in tag, f"{p} missing dur=2s: {tag[:120]}"
             assert 'repeatCount="indefinite"' in tag, f"{p} missing indefinite: {tag[:120]}"
+        assert 'dur="8s"' not in t, f"{p} still has old 8s clock"
         assert 'dur="24s"' not in t, f"{p} still has old 24s clock"
 
 
@@ -87,26 +89,51 @@ def test_no_banned_ids():
         for b in BANNED_IDS:
             assert b not in t, f"{p} still contains banned id {b}"
         assert 'id="act1"' not in t, f"{p} still has act1"
+        assert 'id="dancer"' not in t, f"{p} still has dancer"
+        assert 'id="spinner"' not in t
+        assert 'id="blackout"' not in t
 
 
-def test_dancer_and_banana():
+def test_no_banana():
     for p in FILES:
         t = _read(p)
-        assert 'id="dancer"' in t, f"{p} missing dancer"
-        assert 'translate(400,210)' in t, f"{p} dancer not center-stage"
-        assert "#FFD23F" in t, f"{p} banana must stay yellow #FFD23F"
-        assert 'id="banana"' in t, f"{p} missing banana prop"
+        assert "banana" not in t.lower(), f"{p} still has banana"
+        assert "#FFD23F" not in t, f"{p} still has banana yellow #FFD23F"
+        assert 'id="banana"' not in t, f"{p} still has banana prop"
 
 
-def test_dance_moves_present():
+def test_no_dance_notes():
     for p in FILES:
         t = _read(p)
-        assert "0 -14" in t and "0 -10" in t, f"{p} missing bounce"
-        assert "-8;8;-8" in t, f"{p} missing lean/rock"
-        assert "-10;10;-10" in t, f"{p} missing banana tilt"
-        assert t.count("♪") >= 2, f"{p} need 2-3 music notes"
+        assert "♪" not in t, f"{p} still has music notes"
+        assert "-8;8;-8" not in t, f"{p} still has old dance lean"
+        assert "0 -14" not in t, f"{p} still has old dance bounce"
+
+
+def test_hurry_present():
+    for p in FILES:
+        t = _read(p)
+        assert 'id="hurry"' in t, f"{p} missing hurry group"
+        assert 'translate(400,210)' in t, f"{p} hurry not center-stage"
         assert 'r="16"' in t, f"{p} head r16 missing"
         assert "stroke-linecap" in t, f"{p} round linecaps missing"
+
+
+def test_hurry_frantic_details():
+    for p in FILES:
+        t = _read(p)
+        low = t.lower()
+        assert "speed" in low, f"{p} missing speed lines"
+        assert "sweat" in low, f"{p} missing sweat drops"
+        # rapid leg pump: x2 values with 8+ entries
+        x2_vals = re.findall(r'attributeName="x2" values="([^"]+)"', t)
+        assert x2_vals, f"{p} no leg/arm x2 animation"
+        assert any(len(v.split(";")) >= 8 for v in x2_vals), f"{p} need 8+ entry x2 pump: {x2_vals}"
+        # forward lean ~15deg
+        assert "15;" in t or ";15" in t or "rotate(15" in t or "values=\"15" in t, f"{p} missing ~15deg forward lean"
+        # mad face: eyes + shouting mouth
+        assert "<ellipse" in t, f"{p} missing shouting mouth ellipse"
+        assert t.count("<circle") >= 3, f"{p} need head + 2 eyes (+sweat)"
 
 
 def test_no_banned_text_or_effects():
@@ -116,8 +143,6 @@ def test_no_banned_text_or_effects():
         assert "loading" not in low, f"{p} still has loading"
         for w in ["BONK", "CRACK", "PHEW"]:
             assert w not in t, f"{p} still has {w}"
-        assert 'id="spinner"' not in t
-        assert 'id="blackout"' not in t
         assert 'stroke-dasharray="40 30"' not in t
 
 
@@ -147,7 +172,6 @@ def test_stage_curtains_present():
         assert "#C1121F" in t, f"{p} missing curtain red #C1121F"
         assert t.count("#C1121F") >= 2, f"{p} need red in curtains+valance"
         assert "#780000" in t, f"{p} missing fold stripe #780000"
-        assert "#FFD23F" in t, f"{p} missing gold trim #FFD23F"
 
 
 def test_stage_opening_kept():
@@ -155,8 +179,6 @@ def test_stage_opening_kept():
         t = _read(p)
         assert "curtain-left" in t
         assert t.count("#C1121F") >= 2
-        # No curtain <rect> may cover center stage x 200..600 at y 200.
-        # Curtains are edge <path>s; extract curtain groups and check rects inside.
         for cid in ["curtain-left", "curtain-right", "curtain-top"]:
             m = re.search(rf'<g id="{cid}".*?</g>', t, re.DOTALL)
             assert m, f"{p} missing {cid} group"
@@ -172,7 +194,6 @@ def test_stage_opening_kept():
                     x, w, y, h = map(float, (xm.group(1), wm.group(1), ym.group(1), hm.group(1)))
                     covers = (x < 600 and x + w > 200 and y < 200 and y + h > 200)
                     assert not covers, f"{p} {cid} rect blocks stage: {tag[:120]}"
-        # Edge-only check: side curtains stay at edges, opening >= 560px
         assert "H92" in t or "H90" in t, f"{p} left curtain width ~90px missing"
         assert "H708" in t or "H710" in t, f"{p} right curtain width ~90px missing"
 
@@ -180,12 +201,14 @@ def test_stage_opening_kept():
 def test_curtains_order_and_readme_big_screen():
     for p in FILES:
         t = _read(p)
-        assert t.index('id="curtain-left"') < t.index('id="dancer"'), f"{p} curtains must be before dancer"
-        assert t.index('id="curtain-top"') < t.index('id="dancer"'), f"{p} valance must be before dancer"
+        assert t.index('id="curtain-left"') < t.index('id="hurry"'), f"{p} curtains must be before hurry"
+        assert t.index('id="curtain-top"') < t.index('id="hurry"'), f"{p} valance must be before hurry"
     r = Path("README.md").read_text(encoding="utf-8")
     assert 'width="600"' in r, "README img width must stay 600"
-    assert "?v=3" in r, "README must bump to ?v=3"
-    assert r.count("?v=3") >= 2, "BOTH srcset and src must be ?v=3"
+    assert "?v=4" in r, "README must bump to ?v=4"
+    assert r.count("?v=4") >= 2, "BOTH srcset and src must be ?v=4"
+    assert "?v=3" not in r, "old ?v=3 must be gone"
     assert "?v=2" not in r, "old ?v=2 must be gone"
     assert "STICKMAN SHOW" in r
-    assert 'alt="Stickman dancing on loop"' in r
+    assert 'alt="Stickman hurrying like a mad man"' in r
+    assert 'title="Stickman hurrying like a mad man"' in r
