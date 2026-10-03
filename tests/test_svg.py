@@ -47,15 +47,16 @@ def test_master_clock_no_offset_begin():
         assert 'repeatCount="1"' not in t, f"{p} must not have one-shot repeatCount=1"
 
 
-def test_every_animate_is_master_clock_2s():
+def test_every_animate_is_master_clock_4s():
     for p in FILES:
         t = _read(p)
         tags = re.findall(r'<animate(?:Transform)?[^>]*>', t)
         assert len(tags) >= 10, f"{p} too few animates: {len(tags)}"
         for tag in tags:
             assert 'begin="0s"' in tag, f"{p} missing begin=0s: {tag[:120]}"
-            assert 'dur="2s"' in tag, f"{p} missing dur=2s: {tag[:120]}"
+            assert 'dur="4s"' in tag, f"{p} missing dur=4s: {tag[:120]}"
             assert 'repeatCount="indefinite"' in tag, f"{p} missing indefinite: {tag[:120]}"
+        assert 'dur="2s"' not in t, f"{p} still has old 2s clock"
         assert 'dur="8s"' not in t, f"{p} still has old 8s clock"
         assert 'dur="24s"' not in t, f"{p} still has old 24s clock"
 
@@ -205,10 +206,31 @@ def test_curtains_order_and_readme_big_screen():
         assert t.index('id="curtain-top"') < t.index('id="hurry"'), f"{p} valance must be before hurry"
     r = Path("README.md").read_text(encoding="utf-8")
     assert 'width="600"' in r, "README img width must stay 600"
-    assert "?v=4" in r, "README must bump to ?v=4"
-    assert r.count("?v=4") >= 2, "BOTH srcset and src must be ?v=4"
+    assert "?v=5" in r, "README must bump to ?v=5"
+    assert r.count("?v=5") >= 2, "BOTH srcset and src must be ?v=5"
+    assert "?v=4" not in r, "old ?v=4 must be gone"
     assert "?v=3" not in r, "old ?v=3 must be gone"
     assert "?v=2" not in r, "old ?v=2 must be gone"
     assert "STICKMAN SHOW" in r
     assert 'alt="Stickman hurrying like a mad man"' in r
     assert 'title="Stickman hurrying like a mad man"' in r
+
+
+def test_hurry_lateral_travel():
+    for p in FILES:
+        t = _read(p)
+        m = re.search(r'<g id="hurry".*?<animateTransform[^>]*type="translate"[^>]*values="([^"]+)"', t, re.DOTALL)
+        assert m, f"{p} hurry missing lateral translate shuttle"
+        parts = [s.strip() for s in m.group(1).split(";")]
+        assert len(parts) >= 4, f"{p} hurry travel needs there-and-back: {m.group(1)}"
+        xs = [float(s.split()[0]) for s in parts]
+        assert max(xs) - min(xs) >= 250, f"{p} hurry travel span too small: {m.group(1)}"
+
+
+def test_limbs_shake_many_entries():
+    for p in FILES:
+        t = _read(p)
+        x2_vals = re.findall(r'attributeName="x2" values="([^"]+)"', t)
+        assert x2_vals, f"{p} no limb x2 animation"
+        assert any(len(v.split(";")) >= 8 for v in x2_vals), f"{p} limbs must shake 8+ entries: {x2_vals}"
+        assert any(len(v.split(";")) >= 10 for v in x2_vals), f"{p} limbs must shake 10+ extremes: {x2_vals}"
