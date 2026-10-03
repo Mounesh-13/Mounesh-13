@@ -136,3 +136,56 @@ def test_no_placeholders():
     for p in FILES:
         t = _read(p)
         assert "ACT2" not in t and "ACT3" not in t and "ACT4" not in t and "ACT5" not in t
+
+
+def test_stage_curtains_present():
+    for p in FILES:
+        t = _read(p)
+        assert 'id="curtain-left"' in t, f"{p} missing curtain-left"
+        assert 'id="curtain-right"' in t, f"{p} missing curtain-right"
+        assert 'id="curtain-top"' in t, f"{p} missing curtain-top"
+        assert "#C1121F" in t, f"{p} missing curtain red #C1121F"
+        assert t.count("#C1121F") >= 2, f"{p} need red in curtains+valance"
+        assert "#780000" in t, f"{p} missing fold stripe #780000"
+        assert "#FFD23F" in t, f"{p} missing gold trim #FFD23F"
+
+
+def test_stage_opening_kept():
+    for p in FILES:
+        t = _read(p)
+        assert "curtain-left" in t
+        assert t.count("#C1121F") >= 2
+        # No curtain <rect> may cover center stage x 200..600 at y 200.
+        # Curtains are edge <path>s; extract curtain groups and check rects inside.
+        for cid in ["curtain-left", "curtain-right", "curtain-top"]:
+            m = re.search(rf'<g id="{cid}".*?</g>', t, re.DOTALL)
+            assert m, f"{p} missing {cid} group"
+            g = m.group(0)
+            assert "<animate" not in g, f"{p} {cid} must be static (no animate)"
+            for rm in re.finditer(r'<rect[^>]*>', g):
+                tag = rm.group(0)
+                xm = re.search(r'x="([\d.]+)"', tag)
+                wm = re.search(r'width="([\d.]+)"', tag)
+                ym = re.search(r'y="([\d.]+)"', tag)
+                hm = re.search(r'height="([\d.]+)"', tag)
+                if xm and wm and ym and hm:
+                    x, w, y, h = map(float, (xm.group(1), wm.group(1), ym.group(1), hm.group(1)))
+                    covers = (x < 600 and x + w > 200 and y < 200 and y + h > 200)
+                    assert not covers, f"{p} {cid} rect blocks stage: {tag[:120]}"
+        # Edge-only check: side curtains stay at edges, opening >= 560px
+        assert "H92" in t or "H90" in t, f"{p} left curtain width ~90px missing"
+        assert "H708" in t or "H710" in t, f"{p} right curtain width ~90px missing"
+
+
+def test_curtains_order_and_readme_big_screen():
+    for p in FILES:
+        t = _read(p)
+        assert t.index('id="curtain-left"') < t.index('id="dancer"'), f"{p} curtains must be before dancer"
+        assert t.index('id="curtain-top"') < t.index('id="dancer"'), f"{p} valance must be before dancer"
+    r = Path("README.md").read_text(encoding="utf-8")
+    assert 'width="600"' in r, "README img width must stay 600"
+    assert "?v=3" in r, "README must bump to ?v=3"
+    assert r.count("?v=3") >= 2, "BOTH srcset and src must be ?v=3"
+    assert "?v=2" not in r, "old ?v=2 must be gone"
+    assert "STICKMAN SHOW" in r
+    assert 'alt="Stickman dancing on loop"' in r

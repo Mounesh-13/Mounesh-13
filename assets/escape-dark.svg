@@ -3,6 +3,9 @@
 <rect x="0" y="0" width="800" height="400" fill="#0d1117"/>
 <rect x="4" y="4" width="792" height="392" rx="18" fill="none" stroke="#fff" stroke-width="6"/>
 <line x1="40" y1="330" x2="760" y2="330" stroke="#fff" stroke-width="4" stroke-linecap="round"/>
+<g id="curtain-left"><path d="M0,0 H92 C82,110 108,230 90,340 H0 Z" fill="#C1121F"/><path d="M24,0 C20,110 30,230 24,340 L36,340 C38,230 32,110 36,0 Z" fill="#780000"/><path d="M56,0 C52,110 60,230 55,340 L65,340 C67,230 62,110 65,0 Z" fill="#780000"/><path d="M92,0 C82,110 108,230 90,340" fill="none" stroke="#FFD23F" stroke-width="3"/></g>
+<g id="curtain-right"><path d="M800,0 H708 C718,110 692,230 710,340 H800 Z" fill="#C1121F"/><path d="M776,0 C780,110 770,230 776,340 L764,340 C762,230 768,110 764,0 Z" fill="#780000"/><path d="M744,0 C748,110 740,230 745,340 L735,340 C733,230 738,110 735,0 Z" fill="#780000"/><path d="M708,0 C718,110 692,230 710,340" fill="none" stroke="#FFD23F" stroke-width="3"/></g>
+<g id="curtain-top"><path d="M0,0 H800 V28 Q667,58 534,28 Q400,58 267,28 Q134,58 0,28 Z" fill="#C1121F"/><path d="M0,28 Q134,58 267,28 Q400,58 534,28 Q667,58 800,28" fill="none" stroke="#FFD23F" stroke-width="3"/></g>
 <g id="dancer" transform="translate(400,210)">
 <g>
 <animateTransform attributeName="transform" type="translate" values="0 0;0 -14;0 0;0 -10;0 0" keyTimes="0;0.25;0.5;0.75;1" begin="0s" dur="8s" repeatCount="indefinite"/>
