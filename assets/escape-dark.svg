@@ -11,10 +11,10 @@
 <ellipse cx="0" cy="32" rx="30" ry="6" fill="#888" opacity="0.25"><animate attributeName="opacity" values="0.25;0.25;0;0;0.25" keyTimes="0;0.4;0.5;0.9;1" begin="0s" dur="8s" repeatCount="indefinite"/></ellipse>
 <g>
 <animateTransform attributeName="transform" type="scale" values="1 1;1 1;0 0;0 0;1 1" keyTimes="0;0.4;0.5;0.9;1" begin="0s" dur="8s" repeatCount="indefinite"/>
-<rect x="-22" y="-22" width="44" height="48" rx="10" fill="#E63946" stroke="#7F1D1D" stroke-width="3"/>
-<rect x="-16" y="-16" width="10" height="30" rx="5" fill="#F4848C" opacity="0.55"/>
-<rect x="8" y="14" width="8" height="8" fill="#7F1D1D" opacity="0.35"/>
-<rect x="-2" y="4" width="8" height="8" fill="#7F1D1D" opacity="0.35"/>
+<rect x="-22" y="-22" width="44" height="48" rx="10" fill="#FFE700" stroke="#9A7B00" stroke-width="3"/>
+<rect x="-16" y="-16" width="10" height="30" rx="5" fill="#FFF3B0" opacity="0.55"/>
+<rect x="8" y="14" width="8" height="8" fill="#9A7B00" opacity="0.35"/>
+<rect x="-2" y="4" width="8" height="8" fill="#9A7B00" opacity="0.35"/>
 <rect x="-3" y="-34" width="7" height="12" rx="3" fill="#6F4518"/>
 <ellipse cx="16" cy="-32" rx="12" ry="6" fill="#40916C" stroke="#1B4332" stroke-width="2" transform="rotate(-30 16 -32)"/>
 <path d="M-12,-16 L-10,-8 L-2,-6 L-10,-4 L-12,4 L-14,-4 L-22,-6 L-14,-8 Z" fill="#FFFFFF" opacity="0.9"/>
@@ -24,55 +24,55 @@
 <animateTransform attributeName="transform" type="translate" values="-350 0;450 0;-350 0" keyTimes="0;0.5;1" begin="0s" dur="8s" repeatCount="indefinite" additive="sum"/>
 <g transform="translate(-275,15)">
 <animateTransform attributeName="transform" type="translate" values="0 0;0 -22;0 0;0 22;0 0" keyTimes="0;0.25;0.5;0.75;1" begin="0s" dur="8s" repeatCount="indefinite"/>
-<circle cx="0" cy="0" r="26" fill="#FF1744" stroke="#B71C1C" stroke-width="3"/>
+<circle cx="0" cy="0" r="26" fill="#00F5FF" stroke="#0096C7" stroke-width="3"/>
 <circle cx="-8" cy="-9" r="6" fill="#FFFFFF" opacity="0.55"/>
 </g>
 <g transform="translate(-230,5)">
 <animateTransform attributeName="transform" type="translate" values="0 0;0 22;0 0;0 -22;0 0" keyTimes="0;0.25;0.5;0.75;1" begin="0s" dur="8s" repeatCount="indefinite"/>
-<circle cx="0" cy="0" r="30" fill="#FF9100" stroke="#E65100" stroke-width="3"/>
+<circle cx="0" cy="0" r="30" fill="#4CC9F0" stroke="#0077B6" stroke-width="3"/>
 <circle cx="-9" cy="-10" r="7" fill="#FFFFFF" opacity="0.55"/>
 </g>
 <g transform="translate(-185,-5)">
 <animateTransform attributeName="transform" type="translate" values="0 0;0 -14;0 -22;0 0;0 22;0 0" keyTimes="0;0.2;0.4;0.6;0.8;1" begin="0s" dur="8s" repeatCount="indefinite"/>
-<circle cx="0" cy="0" r="28" fill="#FFEA00" stroke="#9C8600" stroke-width="3"/>
+<circle cx="0" cy="0" r="28" fill="#00F5FF" stroke="#0096C7" stroke-width="3"/>
 <circle cx="-8" cy="-9" r="6" fill="#FFFFFF" opacity="0.55"/>
 </g>
 <g transform="translate(-140,-12)">
 <animateTransform attributeName="transform" type="translate" values="0 0;0 22;0 0;0 -22;0 0" keyTimes="0;0.25;0.5;0.75;1" begin="0s" dur="8s" repeatCount="indefinite"/>
-<circle cx="0" cy="0" r="30" fill="#00E676" stroke="#007E33" stroke-width="3"/>
+<circle cx="0" cy="0" r="30" fill="#4CC9F0" stroke="#0077B6" stroke-width="3"/>
 <circle cx="-9" cy="-10" r="7" fill="#FFFFFF" opacity="0.55"/>
 </g>
 <g transform="translate(-95,-15)">
 <animateTransform attributeName="transform" type="translate" values="0 0;0 -22;0 0;0 22;0 0" keyTimes="0;0.25;0.5;0.75;1" begin="0s" dur="8s" repeatCount="indefinite"/>
-<circle cx="0" cy="0" r="26" fill="#2979FF" stroke="#0D47A1" stroke-width="3"/>
+<circle cx="0" cy="0" r="26" fill="#F000FF" stroke="#6A1B9A" stroke-width="3"/>
 <circle cx="-8" cy="-9" r="6" fill="#FFFFFF" opacity="0.55"/>
 </g>
 <g transform="translate(-50,-10)">
 <animateTransform attributeName="transform" type="translate" values="0 0;0 -14;0 -22;0 0;0 22;0 0" keyTimes="0;0.2;0.4;0.6;0.8;1" begin="0s" dur="8s" repeatCount="indefinite"/>
-<circle cx="0" cy="0" r="30" fill="#D500F9" stroke="#6A1B9A" stroke-width="3"/>
+<circle cx="0" cy="0" r="30" fill="#F72585" stroke="#A4133C" stroke-width="3"/>
 <circle cx="-9" cy="-10" r="7" fill="#FFFFFF" opacity="0.55"/>
 </g>
 <g transform="translate(-5,0)">
 <animateTransform attributeName="transform" type="translate" values="0 0;0 22;0 0;0 -22;0 0" keyTimes="0;0.25;0.5;0.75;1" begin="0s" dur="8s" repeatCount="indefinite"/>
-<circle cx="0" cy="0" r="28" fill="#FF1744" stroke="#B71C1C" stroke-width="3"/>
+<circle cx="0" cy="0" r="28" fill="#F000FF" stroke="#6A1B9A" stroke-width="3"/>
 <circle cx="-8" cy="-9" r="6" fill="#FFFFFF" opacity="0.55"/>
 </g>
 <g transform="translate(40,8)">
 <animateTransform attributeName="transform" type="translate" values="0 0;0 -22;0 0;0 22;0 0" keyTimes="0;0.25;0.5;0.75;1" begin="0s" dur="8s" repeatCount="indefinite"/>
-<circle cx="0" cy="0" r="30" fill="#FF9100" stroke="#E65100" stroke-width="3"/>
+<circle cx="0" cy="0" r="30" fill="#F72585" stroke="#A4133C" stroke-width="3"/>
 <circle cx="-9" cy="-10" r="7" fill="#FFFFFF" opacity="0.55"/>
 </g>
 <g transform="translate(85,12)">
 <animateTransform attributeName="transform" type="translate" values="0 0;0 -14;0 -22;0 0;0 22;0 0" keyTimes="0;0.2;0.4;0.6;0.8;1" begin="0s" dur="8s" repeatCount="indefinite"/>
-<circle cx="0" cy="0" r="26" fill="#FFEA00" stroke="#9C8600" stroke-width="3"/>
+<circle cx="0" cy="0" r="26" fill="#7209B7" stroke="#3A0CA3" stroke-width="3"/>
 <circle cx="-8" cy="-9" r="6" fill="#FFFFFF" opacity="0.55"/>
 </g>
 <g transform="translate(125,8)">
 <animateTransform attributeName="transform" type="translate" values="0 0;0 22;0 0;0 -22;0 0" keyTimes="0;0.25;0.5;0.75;1" begin="0s" dur="8s" repeatCount="indefinite"/>
-<circle cx="0" cy="0" r="28" fill="#00E676" stroke="#007E33" stroke-width="3"/>
+<circle cx="0" cy="0" r="28" fill="#7C4DFF" stroke="#3A0CA3" stroke-width="3"/>
 <circle cx="-8" cy="-9" r="6" fill="#FFFFFF" opacity="0.55"/>
 </g>
-<ellipse id="gulp" cx="60" cy="0" rx="10" ry="20" fill="#E63946" opacity="0">
+<ellipse id="gulp" cx="60" cy="0" rx="10" ry="20" fill="#FFE700" opacity="0">
 <animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.5;0.56;0.7;0.75;1" begin="0s" dur="8s" repeatCount="indefinite"/>
 <animate attributeName="rx" values="10;10;28;28;10;10" keyTimes="0;0.5;0.56;0.7;0.75;1" begin="0s" dur="8s" repeatCount="indefinite"/>
 </ellipse>
@@ -81,14 +81,14 @@
 <animateTransform attributeName="transform" type="scale" values="1 1;1 1;1.15 1.15;1 1;1 1" keyTimes="0;0.35;0.45;0.55;1" begin="0s" dur="8s" repeatCount="indefinite"/>
 <g>
 <animateTransform attributeName="transform" type="rotate" values="-8;8;-8" keyTimes="0;0.5;1" begin="0s" dur="8s" repeatCount="indefinite"/>
-<circle cx="0" cy="0" r="46" fill="none" stroke="#FF1744" stroke-width="3" opacity="0.6"><animate attributeName="opacity" values="0.6;1;0.6" keyTimes="0;0.5;1" begin="0s" dur="8s" repeatCount="indefinite"/></circle>
-<circle cx="0" cy="0" r="40" fill="#1A1A2B" stroke="#000000" stroke-width="3"/>
+<circle cx="0" cy="0" r="46" fill="none" stroke="#F72585" stroke-width="3" opacity="0.6"><animate attributeName="opacity" values="0.6;1;0.6" keyTimes="0;0.5;1" begin="0s" dur="8s" repeatCount="indefinite"/></circle>
+<circle cx="0" cy="0" r="40" fill="#0B0F1A" stroke="#000000" stroke-width="3"/>
 <line x1="-28" y1="-32" x2="-8" y2="-22" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round"/>
 <line x1="28" y1="-32" x2="8" y2="-22" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round"/>
-<ellipse cx="-14" cy="-8" rx="10" ry="10" fill="#FF0000" stroke="#FF6B6B" stroke-width="2">
+<ellipse cx="-14" cy="-8" rx="10" ry="10" fill="#FF3B30" stroke="#FF6B6B" stroke-width="2">
 <animate attributeName="ry" values="10;10;1;10;1;10;10" keyTimes="0;0.3;0.33;0.36;0.7;0.73;1" begin="0s" dur="8s" repeatCount="indefinite"/>
 </ellipse>
-<ellipse cx="14" cy="-8" rx="10" ry="10" fill="#FF0000" stroke="#FF6B6B" stroke-width="2">
+<ellipse cx="14" cy="-8" rx="10" ry="10" fill="#FF3B30" stroke="#FF6B6B" stroke-width="2">
 <animate attributeName="ry" values="10;10;1;10;1;10;10" keyTimes="0;0.3;0.33;0.36;0.7;0.73;1" begin="0s" dur="8s" repeatCount="indefinite"/>
 </ellipse>
 <circle cx="-11" cy="-11" r="3" fill="#FFFFFF" opacity="1"><animate attributeName="opacity" values="1;1;0;1;0;1;1" keyTimes="0;0.3;0.33;0.36;0.7;0.73;1" begin="0s" dur="8s" repeatCount="indefinite"/></circle>
@@ -100,7 +100,7 @@
 <g id="tongue">
 <animateTransform attributeName="transform" type="scale" values="1 1;0.3 1;1 1;0.3 1;1 1" keyTimes="0;0.25;0.5;0.75;1" begin="0s" dur="8s" repeatCount="indefinite"/>
 <animate attributeName="opacity" values="1;0.2;1;0.2;1" keyTimes="0;0.25;0.5;0.75;1" begin="0s" dur="8s" repeatCount="indefinite"/>
-<path d="M0,0 H26 M26,0 L40,-10 M26,0 L40,10" fill="none" stroke="#E63946" stroke-width="6" stroke-linecap="round"/>
+<path d="M0,0 H26 M26,0 L40,-10 M26,0 L40,10" fill="none" stroke="#FF2DAA" stroke-width="6" stroke-linecap="round"/>
 </g>
 </g>
 </g>

@@ -111,12 +111,14 @@ def test_no_banned_text_or_effects():
 
 
 def test_arcade_rainbow_segments():
-    rainbow = ["#FF1744", "#FF9100", "#FFEA00", "#00E676", "#2979FF", "#D500F9"]
+    dark = _read(FILES[1])
+    light = _read(FILES[0])
+    for c in ["#F72585", "#4CC9F0", "#FFE700", "#0B0F1A", "#7C4DFF", "#00F5FF"]:
+        assert c in dark, f"dark missing neon {c}"
+    for c in ["#3A0CA3", "#C2185B", "#0077B6"]:
+        assert c in light, f"light missing jewel {c}"
     for p in FILES:
         t = _read(p)
-        fills = set(re.findall(r'fill="(#[0-9A-Fa-f]{6})"', t))
-        found = [c for c in rainbow if c in fills or c.lower() in {f.lower() for f in fills}]
-        assert len(found) >= 6, f"{p} need >=6 rainbow segment fills, found {found}"
         seg = re.findall(r'<circle[^>]*r="(2[6-9]|30)"', t)
         assert len(seg) >= 10, f"{p} need ~10 big segment circles r26-30, found {len(seg)}"
         assert 'stroke-width="3"' in t, f"{p} missing segment outlines"
@@ -131,10 +133,14 @@ def test_arcade_grid_floor():
 
 
 def test_scary_head_fangs_eyes():
+    dark = _read(FILES[1])
+    light = _read(FILES[0])
+    assert "#0B0F1A" in dark, "dark missing navy head #0B0F1A"
+    assert "#FF3B30" in dark, "dark missing glowing red eyes #FF3B30"
+    assert "#1A1A2E" in light, "light missing head #1A1A2E"
+    assert "#D00000" in light, "light missing red eyes #D00000"
     for p in FILES:
         t = _read(p)
-        assert "#1A1A2B" in t, f"{p} missing dark head #1A1A2B"
-        assert "#FF0000" in t, f"{p} missing glowing red eyes #FF0000"
         assert "<polygon" in t, f"{p} missing white fangs"
         assert 'id="tongue"' in t, f"{p} missing tongue"
         assert t.count("<circle") >= 10, f"{p} need segments + head + glints"
@@ -159,10 +165,13 @@ def test_snake_slither_travel():
 
 
 def test_food_apple_and_gulp():
+    dark = _read(FILES[1])
+    light = _read(FILES[0])
+    assert "#FFE700" in dark, "dark missing legendary gold apple #FFE700"
+    assert "#9A7B00" in light, "light missing deep gold apple #9A7B00"
     for p in FILES:
         t = _read(p)
         assert 'id="food"' in t, f"{p} missing food group"
-        assert "#E63946" in t, f"{p} missing apple red #E63946"
         assert 'id="gulp"' in t, f"{p} missing gulp bulge"
         m = re.search(r'<g id="food".*?type="scale"[^>]*values="([^"]+)"', t, re.DOTALL)
         assert m, f"{p} food missing shrink scale"
@@ -180,16 +189,21 @@ def test_theme_bg():
 def test_identical_geometry_both_themes():
     light = _read(FILES[0])
     dark = _read(FILES[1])
-    norm_dark = dark.replace('#0d1117"', '#ffffff"').replace('#fff"', '#111"')
-    assert norm_dark == light, "geometry must be identical across themes"
+
+    def strip_colors(s):
+        s = re.sub(r'\sfill="[^"]*"', '', s)
+        s = re.sub(r'\sstroke="[^"]*"', '', s)
+        return s
+
+    assert strip_colors(dark) == strip_colors(light), "geometry must be identical across themes (ignoring palette)"
 
 
 def test_readme_snake_show():
     r = Path("README.md").read_text(encoding="utf-8")
     assert 'width="600"' in r, "README img width must stay 600"
-    assert "?v=6" in r, "README must bump to ?v=6"
-    assert r.count("?v=6") >= 2, "BOTH srcset and src must be ?v=6"
-    assert "?v=5" not in r, "old ?v=5 must be gone"
+    assert "?v=7" in r, "README must bump to ?v=7"
+    assert r.count("?v=7") >= 2, "BOTH srcset and src must be ?v=7"
+    assert "?v=6" not in r, "old ?v=6 must be gone"
     assert "SNAKE SHOW" in r
     assert "🐍" in r
     assert "*He's hungry.*" in r
