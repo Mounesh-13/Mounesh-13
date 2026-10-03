@@ -110,16 +110,44 @@ def test_no_banned_text_or_effects():
         assert 'stroke-dasharray="40 30"' not in t
 
 
-def test_snake_present():
+def test_arcade_rainbow_segments():
+    rainbow = ["#FF1744", "#FF9100", "#FFEA00", "#00E676", "#2979FF", "#D500F9"]
     for p in FILES:
         t = _read(p)
-        assert 'id="snake"' in t, f"{p} missing snake group"
-        assert 'stroke-width="34"' in t, f"{p} missing giant body stroke-width 34"
-        assert "#2BA84A" in t, f"{p} missing snake green #2BA84A"
-        assert "#95D5B2" in t, f"{p} missing belly #95D5B2"
+        fills = set(re.findall(r'fill="(#[0-9A-Fa-f]{6})"', t))
+        found = [c for c in rainbow if c in fills or c.lower() in {f.lower() for f in fills}]
+        assert len(found) >= 6, f"{p} need >=6 rainbow segment fills, found {found}"
+        seg = re.findall(r'<circle[^>]*r="(2[6-9]|30)"', t)
+        assert len(seg) >= 10, f"{p} need ~10 big segment circles r26-30, found {len(seg)}"
+        assert 'stroke-width="3"' in t, f"{p} missing segment outlines"
+
+
+def test_arcade_grid_floor():
+    for p in FILES:
+        t = _read(p)
+        assert 'id="grid"' in t, f"{p} missing grid pattern"
+        assert "patternUnits" in t, f"{p} grid must be a pattern"
+        assert 'fill="url(#grid)"' in t, f"{p} grid not applied"
+
+
+def test_scary_head_fangs_eyes():
+    for p in FILES:
+        t = _read(p)
+        assert "#1A1A2B" in t, f"{p} missing dark head #1A1A2B"
+        assert "#FF0000" in t, f"{p} missing glowing red eyes #FF0000"
+        assert "<polygon" in t, f"{p} missing white fangs"
         assert 'id="tongue"' in t, f"{p} missing tongue"
-        assert "<ellipse" in t, f"{p} missing head ellipse"
-        assert t.count("<circle") >= 3, f"{p} need body segments + apple"
+        assert t.count("<circle") >= 10, f"{p} need segments + head + glints"
+
+
+def test_head_lunge_and_gulp_pulse():
+    for p in FILES:
+        t = _read(p)
+        assert "1.15 1.15" in t, f"{p} missing head lunge scale 1.15"
+        assert 'id="gulp"' in t, f"{p} missing gulp bulge"
+        m = re.search(r'<ellipse id="gulp".*?attributeName="rx"[^>]*values="([^"]+)"', t, re.DOTALL)
+        assert m, f"{p} gulp missing rx pulse"
+        assert "28" in m.group(1), f"{p} gulp must pulse wide: {m.group(1)}"
 
 
 def test_snake_slither_travel():
