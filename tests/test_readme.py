@@ -10,9 +10,15 @@ def test_readme_has_picture_themes():
     assert "<picture" in t
     assert "<source" in t
     assert "prefers-color-scheme: dark" in t
-    assert "assets/escape-dark.svg" in t
-    assert "assets/escape-light.svg" in t
+    assert "assets/snake-dark.svg" in t
+    assert "assets/snake-light.svg" in t
     assert t.count("<img") == 1
+
+
+def test_readme_fresh_filenames_no_query_string():
+    t = Path("README.md").read_text(encoding="utf-8")
+    assert "?v=" not in t, "fresh snake-* filenames bust cache, no query string allowed"
+    assert "escape-" not in t, "stale escape-* filenames must be gone"
 
 
 def test_readme_no_single_svg():
@@ -36,11 +42,9 @@ def test_readme_snake_header_caption():
     assert "*Eat. Grow. Repeat.*" in t
 
 
-def test_readme_version_width_alt():
+def test_readme_full_width_alt():
     t = Path("README.md").read_text(encoding="utf-8")
-    assert 'width="600"' in t, "README img width must be 600"
-    assert "?v=9" in t, "README must bump to ?v=9"
-    assert t.count("?v=9") >= 2, "BOTH srcset and src must be ?v=9"
-    assert "?v=8" not in t and "?v=7" not in t, "old version must be gone"
-    assert "Snake game on loop" in t
-    assert t.count("Snake game on loop") >= 2, "alt + title must both say Snake game on loop"
+    assert 'width="100%"' in t, "README img must be full width 100%"
+    assert 'width="600"' not in t, "old fixed width must be gone"
+    assert "Long snake game" in t
+    assert t.count("Long snake game") >= 2, "alt + title must both say Long snake game"

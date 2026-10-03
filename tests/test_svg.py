@@ -2,7 +2,8 @@ from pathlib import Path
 import re
 import xml.etree.ElementTree as ET
 
-FILES = [Path("assets/escape-light.svg"), Path("assets/escape-dark.svg")]
+FILES = [Path("assets/snake-light.svg"), Path("assets/snake-dark.svg")]
+GONE = [Path("assets/escape-light.svg"), Path("assets/escape-dark.svg")]
 DARK_FLOW = ["#7C4DFF", "#F72585", "#4CC9F0"]
 LIGHT_FLOW = ["#3A0CA3", "#C2185B", "#0077B6"]
 
@@ -11,10 +12,15 @@ def _read(p):
     return p.read_text(encoding="utf-8")
 
 
-def test_both_themes_exist_and_size():
+def test_snake_themes_exist_and_size():
     for p in FILES:
         assert p.exists(), f"missing {p}"
-        assert p.stat().st_size < 100 * 1024, f"{p} must be <100KB"
+        assert p.stat().st_size < 150 * 1024, f"{p} must be <150KB"
+
+
+def test_escape_files_gone():
+    for p in GONE:
+        assert not p.exists(), f"stale file still present: {p}"
 
 
 def test_both_valid_xml():
@@ -31,11 +37,12 @@ def test_no_js_or_external():
         assert "http://" not in t_no_ns and "https://" not in t_no_ns
 
 
-def test_viewbox_and_loop():
+def test_viewbox_tall_canvas():
     for p in FILES:
         t = _read(p)
-        assert 'viewBox="0 0 800 400"' in t
-        assert 'repeatCount="indefinite"' in t
+        assert 'viewBox="0 0 800 1600"' in t, f"{p} must be 800x1600 canvas"
+        assert 'width="800"' in t and 'height="1600"' in t
+        assert 'viewBox="0 0 800 400"' not in t, f"{p} still has old short board"
 
 
 def test_master_clock_no_offset_begin():
@@ -46,16 +53,16 @@ def test_master_clock_no_offset_begin():
         assert 'repeatCount="1"' not in t, f"{p} must not have one-shot repeatCount=1"
 
 
-def test_every_animate_is_master_clock_8s():
+def test_every_animate_is_master_clock_12s():
     for p in FILES:
         t = _read(p)
         tags = re.findall(r'<animate(?:Transform)?[^>]*>', t)
         assert len(tags) >= 10, f"{p} too few animates: {len(tags)}"
         for tag in tags:
             assert 'begin="0s"' in tag, f"{p} missing begin=0s: {tag[:120]}"
-            assert 'dur="8s"' in tag, f"{p} missing dur=8s: {tag[:120]}"
+            assert 'dur="12s"' in tag, f"{p} missing dur=12s: {tag[:120]}"
             assert 'repeatCount="indefinite"' in tag, f"{p} missing indefinite: {tag[:120]}"
-        for bad in ['dur="2s"', 'dur="4s"', 'dur="24s"']:
+        for bad in ['dur="8s"', 'dur="2s"', 'dur="4s"', 'dur="24s"']:
             assert bad not in t, f"{p} still has old clock {bad}"
 
 
@@ -89,7 +96,7 @@ def test_theme_bg():
     assert "#0d1117" in dark, "dark bg must be #0d1117"
 
 
-def test_grid_visible():
+def test_grid_visible_full_height():
     for p in FILES:
         t = _read(p)
         assert 'id="grid"' in t, f"{p} missing grid group"
@@ -98,12 +105,13 @@ def test_grid_visible():
                if 'stroke-width="2"' in ln
                and re.search(r'opacit[y]*="([\d.]+)"', ln)
                and float(re.search(r'opacit[y]*="([\d.]+)"', ln).group(1)) >= 0.3]
-        assert len(vis) >= 20, f"{p} need >=20 visible grid lines, found {len(vis)}"
+        assert len(vis) >= 40, f"{p} tall board needs >=40 grid lines, found {len(vis)}"
+        assert "1600" in t, f"{p} grid must span full 1600 height"
     assert "#111111" in _read(FILES[0]) or "#111" in _read(FILES[0]), "light grid must be #111"
     assert "#FFFFFF" in _read(FILES[1]) or "#fff" in _read(FILES[1]).lower(), "dark grid must be #fff"
 
 
-def test_snake_blocky_segments():
+def test_snake_long_blocky_segments():
     dark = _read(FILES[1])
     light = _read(FILES[0])
     for c in DARK_FLOW:
@@ -113,10 +121,11 @@ def test_snake_blocky_segments():
     for p in FILES:
         t = _read(p)
         segs = re.findall(r'<rect[^>]*rx="8"[^>]*>', t)
-        assert len(segs) >= 9, f"{p} need 8-10 blocky segments rx=8, found {len(segs)}"
+        assert len(segs) >= 14, f"{p} need 14+ blocky segments rx=8, found {len(segs)}"
+        assert 'id="tail"' in t, f"{p} missing tail"
 
 
-def test_head_angry_eyes_fangs():
+def test_head_angry_eyes_fangs_tongue():
     dark = _read(FILES[1])
     light = _read(FILES[0])
     assert "#FF3B30" in dark, "dark missing angry red eyes #FF3B30"
@@ -124,10 +133,11 @@ def test_head_angry_eyes_fangs():
     for p in FILES:
         t = _read(p)
         assert 'id="head"' in t, f"{p} missing head group"
-        assert "<polygon" in t, f"{p} missing fangs"
+        assert 'id="tongue"' in t, f"{p} missing tongue"
+        assert t.count("<polygon") >= 3, f"{p} missing fangs + tongue polygons"
 
 
-def test_snake_patrol_path():
+def test_snake_travels_top_to_bottom():
     for p in FILES:
         t = _read(p)
         m = re.search(r'<g id="snake">.*?<animateTransform[^>]*type="translate"[^>]*values="([^"]+)"',
@@ -136,40 +146,41 @@ def test_snake_patrol_path():
         pts = [s.strip() for s in m.group(1).split(";")]
         assert len(pts) >= 5, f"{p} patrol needs waypoints: {m.group(1)}"
         assert pts[0] == pts[-1], f"{p} patrol not seamless"
+        ys = [float(pt.split()[1]) for pt in pts]
+        assert ys[0] < 0, f"{p} snake must enter from above top, starts y={ys[0]}"
+        assert max(ys) > 1600, f"{p} snake must exit below bottom, max y={max(ys)}"
 
 
-def test_apple_eaten_mid_loop():
+def test_three_apples_eaten_vertically():
     for p in FILES:
         t = _read(p)
-        assert 'id="apple"' in t, f"{p} missing apple"
+        assert len(re.findall(r'id="apple', t)) == 3, f"{p} must have exactly 3 foods"
         assert "#E5383B" in t, f"{p} missing red apple square"
         assert "#2DC653" in t, f"{p} missing apple leaf"
-        m = re.search(r'<g id="apple".*?type="scale"[^>]*values="([^"]+)"', t, re.DOTALL)
-        assert m, f"{p} apple missing shrink scale"
-        assert "0 0" in [s.strip() for s in m.group(1).split(";")], f"{p} apple must shrink to 0"
+        for aid in ("apple-1", "apple-2", "apple-3"):
+            m = re.search(rf'<g id="{aid}".*?type="scale"[^>]*values="([^"]+)"', t, re.DOTALL)
+            assert m, f"{p} {aid} missing shrink scale"
+            assert "0 0" in [s.strip() for s in m.group(1).split(";")], f"{p} {aid} must shrink to 0"
+        cy = [int(m.group(1)) for m in
+              re.finditer(r'<g id="apple-\d" transform="translate\(\d+ (\d+)\)', t)]
+        assert len(cy) == 3 and cy == sorted(cy), f"{p} apples must be spaced vertically: {cy}"
+        assert max(cy) - min(cy) >= 500, f"{p} apples must span the tall board: {cy}"
 
 
-def test_score_ticks_up():
+def test_score_ticks_05_10_15_and_gulps():
     for p in FILES:
         t = _read(p)
-        assert "SCORE 08" in t and "SCORE 09" in t, f"{p} missing score texts"
-        assert len(re.findall(r"SCORE \d+", t)) >= 2, f"{p} need 2-3 score texts"
+        for s in ("SCORE 05", "SCORE 10", "SCORE 15"):
+            assert s in t, f"{p} missing {s}"
+        assert len(re.findall(r'id="gulp', t)) == 3, f"{p} must have 3 gulp pulses"
         assert 'opacity' in t, f"{p} score needs opacity toggles"
-
-
-def test_game_over_flash():
-    for p in FILES:
-        t = _read(p)
-        assert "GAME OVER" in t, f"{p} missing GAME OVER"
-        m = re.search(r'GAME OVER<animate[^>]*values="([^"]+)"', t)
-        assert m, f"{p} game-over missing flash animate"
-        assert "1" in [s.strip() for s in m.group(1).split(";")], f"{p} game-over never flashes"
 
 
 def test_board_border():
     for p in FILES:
         t = _read(p)
         assert 'fill="none"' in t, f"{p} missing board border"
+        assert "1596" in t or "1600" in t, f"{p} border must fit tall board"
 
 
 def test_identical_geometry_both_themes():
@@ -187,5 +198,5 @@ def test_identical_geometry_both_themes():
 def test_alt_title_match():
     for p in FILES:
         t = _read(p)
-        assert 'aria-label="Snake game on loop"' in t, f"{p} aria-label wrong"
-        assert "<title>Snake game on loop</title>" in t, f"{p} title wrong"
+        assert 'aria-label="Long snake game"' in t, f"{p} aria-label wrong"
+        assert "<title>Long snake game</title>" in t, f"{p} title wrong"
