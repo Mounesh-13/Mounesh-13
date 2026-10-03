@@ -1,10 +1,10 @@
-<!-- Giant snake eat-and-leave loop. -->
+<!-- Snake game board loop. -->
 <div align="center">
 
-# 🐍 SNAKE SHOW 🐍
+# 🐍 SNAKE
 
-<picture><source media="(prefers-color-scheme: dark)" srcset="./assets/escape-dark.svg?v=7" /><img src="./assets/escape-light.svg?v=7" width="600" alt="Giant snake eats and leaves" title="Giant snake eats and leaves" /></picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="./assets/escape-dark.svg?v=9" /><img src="./assets/escape-light.svg?v=9" width="600" alt="Snake game on loop" title="Snake game on loop" /></picture>
 
-### *He's hungry.*
+*Eat. Grow. Repeat.*
 
 </div>

@@ -1,110 +1,75 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" width="800" height="400" role="img" aria-label="Giant snake eats and leaves">
-<title>Giant snake eats and leaves</title>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" width="800" height="400" role="img" aria-label="Snake game on loop">
+<title>Snake game on loop</title>
 <rect x="0" y="0" width="800" height="400" fill="#0d1117"/>
-<pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse">
-<path d="M10,0H0V10" fill="none" stroke="#fff" stroke-width="1"/>
-</pattern>
-<rect x="0" y="0" width="800" height="400" fill="url(#grid)" opacity="0.12"/>
-<rect x="4" y="4" width="792" height="392" rx="18" fill="none" stroke="#fff" stroke-width="6"/>
-<line x1="40" y1="330" x2="760" y2="330" stroke="#fff" stroke-width="4" stroke-linecap="round"/>
-<g id="food" transform="translate(400,290)">
-<ellipse cx="0" cy="32" rx="30" ry="6" fill="#888" opacity="0.25"><animate attributeName="opacity" values="0.25;0.25;0;0;0.25" keyTimes="0;0.4;0.5;0.9;1" begin="0s" dur="8s" repeatCount="indefinite"/></ellipse>
+<g id="grid">
+<line x1="0" y1="0" x2="0" y2="400" stroke="#FFFFFF" stroke-width="2" opacity="0.35"/>
+<line x1="40" y1="0" x2="40" y2="400" stroke="#FFFFFF" stroke-width="2" opacity="0.35"/>
+<line x1="80" y1="0" x2="80" y2="400" stroke="#FFFFFF" stroke-width="2" opacity="0.35"/>
+<line x1="120" y1="0" x2="120" y2="400" stroke="#FFFFFF" stroke-width="2" opacity="0.35"/>
+<line x1="160" y1="0" x2="160" y2="400" stroke="#FFFFFF" stroke-width="2" opacity="0.35"/>
+<line x1="200" y1="0" x2="200" y2="400" stroke="#FFFFFF" stroke-width="2" opacity="0.35"/>
+<line x1="240" y1="0" x2="240" y2="400" stroke="#FFFFFF" stroke-width="2" opacity="0.35"/>
+<line x1="280" y1="0" x2="280" y2="400" stroke="#FFFFFF" stroke-width="2" opacity="0.35"/>
+<line x1="320" y1="0" x2="320" y2="400" stroke="#FFFFFF" stroke-width="2" opacity="0.35"/>
+<line x1="360" y1="0" x2="360" y2="400" stroke="#FFFFFF" stroke-width="2" opacity="0.35"/>
+<line x1="400" y1="0" x2="400" y2="400" stroke="#FFFFFF" stroke-width="2" opacity="0.35"/>
+<line x1="440" y1="0" x2="440" y2="400" stroke="#FFFFFF" stroke-width="2" opacity="0.35"/>
+<line x1="480" y1="0" x2="480" y2="400" stroke="#FFFFFF" stroke-width="2" opacity="0.35"/>
+<line x1="520" y1="0" x2="520" y2="400" stroke="#FFFFFF" stroke-width="2" opacity="0.35"/>
+<line x1="560" y1="0" x2="560" y2="400" stroke="#FFFFFF" stroke-width="2" opacity="0.35"/>
+<line x1="600" y1="0" x2="600" y2="400" stroke="#FFFFFF" stroke-width="2" opacity="0.35"/>
+<line x1="640" y1="0" x2="640" y2="400" stroke="#FFFFFF" stroke-width="2" opacity="0.35"/>
+<line x1="680" y1="0" x2="680" y2="400" stroke="#FFFFFF" stroke-width="2" opacity="0.35"/>
+<line x1="720" y1="0" x2="720" y2="400" stroke="#FFFFFF" stroke-width="2" opacity="0.35"/>
+<line x1="760" y1="0" x2="760" y2="400" stroke="#FFFFFF" stroke-width="2" opacity="0.35"/>
+<line x1="800" y1="0" x2="800" y2="400" stroke="#FFFFFF" stroke-width="2" opacity="0.35"/>
+<line x1="0" y1="0" x2="800" y2="0" stroke="#FFFFFF" stroke-width="2" opacity="0.35"/>
+<line x1="0" y1="40" x2="800" y2="40" stroke="#FFFFFF" stroke-width="2" opacity="0.35"/>
+<line x1="0" y1="80" x2="800" y2="80" stroke="#FFFFFF" stroke-width="2" opacity="0.35"/>
+<line x1="0" y1="120" x2="800" y2="120" stroke="#FFFFFF" stroke-width="2" opacity="0.35"/>
+<line x1="0" y1="160" x2="800" y2="160" stroke="#FFFFFF" stroke-width="2" opacity="0.35"/>
+<line x1="0" y1="200" x2="800" y2="200" stroke="#FFFFFF" stroke-width="2" opacity="0.35"/>
+<line x1="0" y1="240" x2="800" y2="240" stroke="#FFFFFF" stroke-width="2" opacity="0.35"/>
+<line x1="0" y1="280" x2="800" y2="280" stroke="#FFFFFF" stroke-width="2" opacity="0.35"/>
+<line x1="0" y1="320" x2="800" y2="320" stroke="#FFFFFF" stroke-width="2" opacity="0.35"/>
+<line x1="0" y1="360" x2="800" y2="360" stroke="#FFFFFF" stroke-width="2" opacity="0.35"/>
+<line x1="0" y1="400" x2="800" y2="400" stroke="#FFFFFF" stroke-width="2" opacity="0.35"/>
+</g>
+<rect x="2" y="2" width="796" height="396" fill="none" stroke="#FFFFFF" stroke-width="4"/>
+<text x="24" y="38" font-family="monospace" font-size="26" font-weight="bold" fill="#FFFFFF" opacity="0">SCORE 08<animate attributeName="opacity" values="1;1;0;0;1" keyTimes="0;0.45;0.55;0.9;1" begin="0s" dur="8s" repeatCount="indefinite"/></text>
+<text x="24" y="38" font-family="monospace" font-size="26" font-weight="bold" fill="#FFFFFF" opacity="0">SCORE 09<animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.45;0.55;0.9;1" begin="0s" dur="8s" repeatCount="indefinite"/></text>
+<text x="24" y="38" font-family="monospace" font-size="26" font-weight="bold" fill="#FFFFFF" opacity="0">SCORE 10<animate attributeName="opacity" values="0;0;0;1;0" keyTimes="0;0.55;0.8;0.9;1" begin="0s" dur="8s" repeatCount="indefinite"/></text>
+<g id="apple" transform="translate(600 320)">
 <g>
-<animateTransform attributeName="transform" type="scale" values="1 1;1 1;0 0;0 0;1 1" keyTimes="0;0.4;0.5;0.9;1" begin="0s" dur="8s" repeatCount="indefinite"/>
-<rect x="-22" y="-22" width="44" height="48" rx="10" fill="#FFE700" stroke="#9A7B00" stroke-width="3"/>
-<rect x="-16" y="-16" width="10" height="30" rx="5" fill="#FFF3B0" opacity="0.55"/>
-<rect x="8" y="14" width="8" height="8" fill="#9A7B00" opacity="0.35"/>
-<rect x="-2" y="4" width="8" height="8" fill="#9A7B00" opacity="0.35"/>
-<rect x="-3" y="-34" width="7" height="12" rx="3" fill="#6F4518"/>
-<ellipse cx="16" cy="-32" rx="12" ry="6" fill="#40916C" stroke="#1B4332" stroke-width="2" transform="rotate(-30 16 -32)"/>
-<path d="M-12,-16 L-10,-8 L-2,-6 L-10,-4 L-12,4 L-14,-4 L-22,-6 L-14,-8 Z" fill="#FFFFFF" opacity="0.9"/>
+<animateTransform attributeName="transform" type="scale" values="1 1;1 1;0 0;0 0;1 1" keyTimes="0;0.45;0.55;0.9;1" begin="0s" dur="8s" repeatCount="indefinite"/>
+<rect x="-15" y="-15" width="30" height="30" rx="4" fill="#E5383B" stroke="#7F1D1D" stroke-width="2"/>
+<rect x="-9" y="-9" width="8" height="8" fill="#FFFFFF" opacity="0.85"/>
+<rect x="4" y="-24" width="14" height="8" rx="4" fill="#2DC653" transform="rotate(30 11 -20)"/>
+<rect x="-2" y="-24" width="4" height="10" fill="#7F4F24"/>
+<rect x="8" y="2" width="4" height="4" fill="#FFFFFF" opacity="0.9"/>
 </g>
 </g>
-<g id="snake" transform="translate(400,250)">
-<animateTransform attributeName="transform" type="translate" values="-350 0;450 0;-350 0" keyTimes="0;0.5;1" begin="0s" dur="8s" repeatCount="indefinite" additive="sum"/>
-<g transform="translate(-275,15)">
-<animateTransform attributeName="transform" type="translate" values="0 0;0 -22;0 0;0 22;0 0" keyTimes="0;0.25;0.5;0.75;1" begin="0s" dur="8s" repeatCount="indefinite"/>
-<circle cx="0" cy="0" r="26" fill="#00F5FF" stroke="#0096C7" stroke-width="3"/>
-<circle cx="-8" cy="-9" r="6" fill="#FFFFFF" opacity="0.55"/>
-</g>
-<g transform="translate(-230,5)">
-<animateTransform attributeName="transform" type="translate" values="0 0;0 22;0 0;0 -22;0 0" keyTimes="0;0.25;0.5;0.75;1" begin="0s" dur="8s" repeatCount="indefinite"/>
-<circle cx="0" cy="0" r="30" fill="#4CC9F0" stroke="#0077B6" stroke-width="3"/>
-<circle cx="-9" cy="-10" r="7" fill="#FFFFFF" opacity="0.55"/>
-</g>
-<g transform="translate(-185,-5)">
-<animateTransform attributeName="transform" type="translate" values="0 0;0 -14;0 -22;0 0;0 22;0 0" keyTimes="0;0.2;0.4;0.6;0.8;1" begin="0s" dur="8s" repeatCount="indefinite"/>
-<circle cx="0" cy="0" r="28" fill="#00F5FF" stroke="#0096C7" stroke-width="3"/>
-<circle cx="-8" cy="-9" r="6" fill="#FFFFFF" opacity="0.55"/>
-</g>
-<g transform="translate(-140,-12)">
-<animateTransform attributeName="transform" type="translate" values="0 0;0 22;0 0;0 -22;0 0" keyTimes="0;0.25;0.5;0.75;1" begin="0s" dur="8s" repeatCount="indefinite"/>
-<circle cx="0" cy="0" r="30" fill="#4CC9F0" stroke="#0077B6" stroke-width="3"/>
-<circle cx="-9" cy="-10" r="7" fill="#FFFFFF" opacity="0.55"/>
-</g>
-<g transform="translate(-95,-15)">
-<animateTransform attributeName="transform" type="translate" values="0 0;0 -22;0 0;0 22;0 0" keyTimes="0;0.25;0.5;0.75;1" begin="0s" dur="8s" repeatCount="indefinite"/>
-<circle cx="0" cy="0" r="26" fill="#F000FF" stroke="#6A1B9A" stroke-width="3"/>
-<circle cx="-8" cy="-9" r="6" fill="#FFFFFF" opacity="0.55"/>
-</g>
-<g transform="translate(-50,-10)">
-<animateTransform attributeName="transform" type="translate" values="0 0;0 -14;0 -22;0 0;0 22;0 0" keyTimes="0;0.2;0.4;0.6;0.8;1" begin="0s" dur="8s" repeatCount="indefinite"/>
-<circle cx="0" cy="0" r="30" fill="#F72585" stroke="#A4133C" stroke-width="3"/>
-<circle cx="-9" cy="-10" r="7" fill="#FFFFFF" opacity="0.55"/>
-</g>
-<g transform="translate(-5,0)">
-<animateTransform attributeName="transform" type="translate" values="0 0;0 22;0 0;0 -22;0 0" keyTimes="0;0.25;0.5;0.75;1" begin="0s" dur="8s" repeatCount="indefinite"/>
-<circle cx="0" cy="0" r="28" fill="#F000FF" stroke="#6A1B9A" stroke-width="3"/>
-<circle cx="-8" cy="-9" r="6" fill="#FFFFFF" opacity="0.55"/>
-</g>
-<g transform="translate(40,8)">
-<animateTransform attributeName="transform" type="translate" values="0 0;0 -22;0 0;0 22;0 0" keyTimes="0;0.25;0.5;0.75;1" begin="0s" dur="8s" repeatCount="indefinite"/>
-<circle cx="0" cy="0" r="30" fill="#F72585" stroke="#A4133C" stroke-width="3"/>
-<circle cx="-9" cy="-10" r="7" fill="#FFFFFF" opacity="0.55"/>
-</g>
-<g transform="translate(85,12)">
-<animateTransform attributeName="transform" type="translate" values="0 0;0 -14;0 -22;0 0;0 22;0 0" keyTimes="0;0.2;0.4;0.6;0.8;1" begin="0s" dur="8s" repeatCount="indefinite"/>
-<circle cx="0" cy="0" r="26" fill="#7209B7" stroke="#3A0CA3" stroke-width="3"/>
-<circle cx="-8" cy="-9" r="6" fill="#FFFFFF" opacity="0.55"/>
-</g>
-<g transform="translate(125,8)">
-<animateTransform attributeName="transform" type="translate" values="0 0;0 22;0 0;0 -22;0 0" keyTimes="0;0.25;0.5;0.75;1" begin="0s" dur="8s" repeatCount="indefinite"/>
-<circle cx="0" cy="0" r="28" fill="#7C4DFF" stroke="#3A0CA3" stroke-width="3"/>
-<circle cx="-8" cy="-9" r="6" fill="#FFFFFF" opacity="0.55"/>
-</g>
-<ellipse id="gulp" cx="60" cy="0" rx="10" ry="20" fill="#FFE700" opacity="0">
-<animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.5;0.56;0.7;0.75;1" begin="0s" dur="8s" repeatCount="indefinite"/>
-<animate attributeName="rx" values="10;10;28;28;10;10" keyTimes="0;0.5;0.56;0.7;0.75;1" begin="0s" dur="8s" repeatCount="indefinite"/>
-</ellipse>
-<g transform="translate(170,-12)">
-<g>
-<animateTransform attributeName="transform" type="scale" values="1 1;1 1;1.15 1.15;1 1;1 1" keyTimes="0;0.35;0.45;0.55;1" begin="0s" dur="8s" repeatCount="indefinite"/>
-<g>
-<animateTransform attributeName="transform" type="rotate" values="-8;8;-8" keyTimes="0;0.5;1" begin="0s" dur="8s" repeatCount="indefinite"/>
-<circle cx="0" cy="0" r="46" fill="none" stroke="#F72585" stroke-width="3" opacity="0.6"><animate attributeName="opacity" values="0.6;1;0.6" keyTimes="0;0.5;1" begin="0s" dur="8s" repeatCount="indefinite"/></circle>
-<circle cx="0" cy="0" r="40" fill="#0B0F1A" stroke="#000000" stroke-width="3"/>
-<line x1="-28" y1="-32" x2="-8" y2="-22" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round"/>
-<line x1="28" y1="-32" x2="8" y2="-22" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round"/>
-<ellipse cx="-14" cy="-8" rx="10" ry="10" fill="#FF3B30" stroke="#FF6B6B" stroke-width="2">
-<animate attributeName="ry" values="10;10;1;10;1;10;10" keyTimes="0;0.3;0.33;0.36;0.7;0.73;1" begin="0s" dur="8s" repeatCount="indefinite"/>
-</ellipse>
-<ellipse cx="14" cy="-8" rx="10" ry="10" fill="#FF3B30" stroke="#FF6B6B" stroke-width="2">
-<animate attributeName="ry" values="10;10;1;10;1;10;10" keyTimes="0;0.3;0.33;0.36;0.7;0.73;1" begin="0s" dur="8s" repeatCount="indefinite"/>
-</ellipse>
-<circle cx="-11" cy="-11" r="3" fill="#FFFFFF" opacity="1"><animate attributeName="opacity" values="1;1;0;1;0;1;1" keyTimes="0;0.3;0.33;0.36;0.7;0.73;1" begin="0s" dur="8s" repeatCount="indefinite"/></circle>
-<circle cx="17" cy="-11" r="3" fill="#FFFFFF" opacity="1"><animate attributeName="opacity" values="1;1;0;1;0;1;1" keyTimes="0;0.3;0.33;0.36;0.7;0.73;1" begin="0s" dur="8s" repeatCount="indefinite"/></circle>
-<path d="M-24,14 Q0,26 24,14" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" opacity="0.8"/>
-<polygon points="-18,16 -8,16 -13,30" fill="#FFFFFF"/>
-<polygon points="8,16 18,16 13,30" fill="#FFFFFF"/>
-<g transform="translate(0,30)">
-<g id="tongue">
-<animateTransform attributeName="transform" type="scale" values="1 1;0.3 1;1 1;0.3 1;1 1" keyTimes="0;0.25;0.5;0.75;1" begin="0s" dur="8s" repeatCount="indefinite"/>
-<animate attributeName="opacity" values="1;0.2;1;0.2;1" keyTimes="0;0.25;0.5;0.75;1" begin="0s" dur="8s" repeatCount="indefinite"/>
-<path d="M0,0 H26 M26,0 L40,-10 M26,0 L40,10" fill="none" stroke="#FF2DAA" stroke-width="6" stroke-linecap="round"/>
+<g id="snake">
+<animateTransform attributeName="transform" type="translate" values="100 100;600 100;660 160;660 280;600 320;100 320;40 260;40 140;100 100" keyTimes="0;0.125;0.25;0.375;0.5;0.625;0.75;0.875;1" begin="0s" dur="8s" repeatCount="indefinite"/>
+<rect x="-48" y="-18" width="36" height="36" rx="8" fill="#9333EA" stroke-width="2"><animateTransform attributeName="transform" type="translate" values="0 0;0 -8;0 0;0 8;0 0" keyTimes="0;0.25;0.5;0.75;1" begin="0s" dur="8s" repeatCount="indefinite"/></rect>
+<rect x="-88" y="-18" width="36" height="36" rx="8" fill="#C026D3" stroke-width="2"><animateTransform attributeName="transform" type="translate" values="0 0;0 8;0 0;0 -8;0 0" keyTimes="0;0.25;0.5;0.75;1" begin="0s" dur="8s" repeatCount="indefinite"/></rect>
+<rect x="-128" y="-18" width="36" height="36" rx="8" fill="#F72585" stroke-width="2"><animateTransform attributeName="transform" type="translate" values="0 0;0 -8;0 0;0 8;0 0" keyTimes="0;0.25;0.5;0.75;1" begin="0s" dur="8s" repeatCount="indefinite"/></rect>
+<rect x="-168" y="-18" width="36" height="36" rx="8" fill="#FF4D6D" stroke-width="2"><animateTransform attributeName="transform" type="translate" values="0 0;0 8;0 0;0 -8;0 0" keyTimes="0;0.25;0.5;0.75;1" begin="0s" dur="8s" repeatCount="indefinite"/></rect>
+<rect x="-208" y="-18" width="36" height="36" rx="8" fill="#FF7B00" stroke-width="2"><animateTransform attributeName="transform" type="translate" values="0 0;0 -8;0 0;0 8;0 0" keyTimes="0;0.25;0.5;0.75;1" begin="0s" dur="8s" repeatCount="indefinite"/></rect>
+<rect x="-248" y="-18" width="36" height="36" rx="8" fill="#FFB703" stroke-width="2"><animateTransform attributeName="transform" type="translate" values="0 0;0 8;0 0;0 -8;0 0" keyTimes="0;0.25;0.5;0.75;1" begin="0s" dur="8s" repeatCount="indefinite"/></rect>
+<rect x="-288" y="-18" width="36" height="36" rx="8" fill="#4CC9F0" stroke-width="2"><animateTransform attributeName="transform" type="translate" values="0 0;0 -8;0 0;0 8;0 0" keyTimes="0;0.25;0.5;0.75;1" begin="0s" dur="8s" repeatCount="indefinite"/></rect>
+<rect x="-328" y="-18" width="36" height="36" rx="8" fill="#00F5FF" stroke-width="2"><animateTransform attributeName="transform" type="translate" values="0 0;0 8;0 0;0 -8;0 0" keyTimes="0;0.25;0.5;0.75;1" begin="0s" dur="8s" repeatCount="indefinite"/></rect>
+<g id="head">
+<rect x="-22" y="-22" width="44" height="44" rx="8" fill="#7C4DFF" stroke-width="2"/>
+<rect x="-14" y="-12" width="12" height="12" rx="2" fill="#FF3B30"/>
+<rect x="2" y="-12" width="12" height="12" rx="2" fill="#FF3B30"/>
+<rect x="-11" y="-9" width="6" height="6" fill="#000000"/>
+<rect x="5" y="-9" width="6" height="6" fill="#000000"/>
+<line x1="-16" y1="-18" x2="-2" y2="-12" stroke="#FFFFFF" stroke-width="3"/>
+<line x1="16" y1="-18" x2="2" y2="-12" stroke="#FFFFFF" stroke-width="3"/>
+<polygon points="-10,14 -4,14 -7,24" fill="#FFFFFF"/>
+<polygon points="4,14 10,14 7,24" fill="#FFFFFF"/>
 </g>
 </g>
-</g>
-</g>
-</g>
-</g>
+<text x="400" y="210" text-anchor="middle" font-family="monospace" font-size="52" font-weight="bold" fill="#FF0000" opacity="0">GAME OVER<animate attributeName="opacity" values="0;0;0;1;1;0;0" keyTimes="0;0.7;0.8;0.85;0.9;0.95;1" begin="0s" dur="8s" repeatCount="indefinite"/></text>
 </svg>

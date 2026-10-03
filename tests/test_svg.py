@@ -3,8 +3,8 @@ import re
 import xml.etree.ElementTree as ET
 
 FILES = [Path("assets/escape-light.svg"), Path("assets/escape-dark.svg")]
-BANNED_IDS = ["hurry", "dancer", "dance", "banana", "curtain",
-              "spinner", "blackout", "knock", "mallet", "crack", "leak"]
+DARK_FLOW = ["#7C4DFF", "#F72585", "#4CC9F0"]
+LIGHT_FLOW = ["#3A0CA3", "#C2185B", "#0077B6"]
 
 
 def _read(p):
@@ -55,9 +55,8 @@ def test_every_animate_is_master_clock_8s():
             assert 'begin="0s"' in tag, f"{p} missing begin=0s: {tag[:120]}"
             assert 'dur="8s"' in tag, f"{p} missing dur=8s: {tag[:120]}"
             assert 'repeatCount="indefinite"' in tag, f"{p} missing indefinite: {tag[:120]}"
-        assert 'dur="2s"' not in t, f"{p} still has old 2s clock"
-        assert 'dur="4s"' not in t, f"{p} still has old 4s clock"
-        assert 'dur="24s"' not in t, f"{p} still has old 24s clock"
+        for bad in ['dur="2s"', 'dur="4s"', 'dur="24s"']:
+            assert bad not in t, f"{p} still has old clock {bad}"
 
 
 def test_keytimes_range_and_monotonic():
@@ -83,107 +82,94 @@ def test_seamless_values_first_equals_last():
             assert parts[0] == parts[-1], f"{p} not seamless: {v}"
 
 
-def test_no_banned_ids():
-    for p in FILES:
-        t = _read(p)
-        for b in BANNED_IDS:
-            assert b not in t, f"{p} still contains banned id {b}"
-        assert 'id="hurry"' not in t, f"{p} still has hurry"
-        assert 'id="banana"' not in t, f"{p} still has banana"
-
-
-def test_no_banana_or_notes():
-    for p in FILES:
-        t = _read(p)
-        assert "banana" not in t.lower(), f"{p} still has banana"
-        assert "#FFD23F" not in t, f"{p} still has banana yellow #FFD23F"
-        assert "♪" not in t, f"{p} still has music notes"
-
-
-def test_no_banned_text_or_effects():
-    for p in FILES:
-        t = _read(p)
-        low = t.lower()
-        assert "loading" not in low, f"{p} still has loading"
-        for w in ["BONK", "CRACK", "PHEW"]:
-            assert w not in t, f"{p} still has {w}"
-        assert 'stroke-dasharray="40 30"' not in t
-
-
-def test_arcade_rainbow_segments():
-    dark = _read(FILES[1])
-    light = _read(FILES[0])
-    for c in ["#F72585", "#4CC9F0", "#FFE700", "#0B0F1A", "#7C4DFF", "#00F5FF"]:
-        assert c in dark, f"dark missing neon {c}"
-    for c in ["#3A0CA3", "#C2185B", "#0077B6"]:
-        assert c in light, f"light missing jewel {c}"
-    for p in FILES:
-        t = _read(p)
-        seg = re.findall(r'<circle[^>]*r="(2[6-9]|30)"', t)
-        assert len(seg) >= 10, f"{p} need ~10 big segment circles r26-30, found {len(seg)}"
-        assert 'stroke-width="3"' in t, f"{p} missing segment outlines"
-
-
-def test_arcade_grid_floor():
-    for p in FILES:
-        t = _read(p)
-        assert 'id="grid"' in t, f"{p} missing grid pattern"
-        assert "patternUnits" in t, f"{p} grid must be a pattern"
-        assert 'fill="url(#grid)"' in t, f"{p} grid not applied"
-
-
-def test_scary_head_fangs_eyes():
-    dark = _read(FILES[1])
-    light = _read(FILES[0])
-    assert "#0B0F1A" in dark, "dark missing navy head #0B0F1A"
-    assert "#FF3B30" in dark, "dark missing glowing red eyes #FF3B30"
-    assert "#1A1A2E" in light, "light missing head #1A1A2E"
-    assert "#D00000" in light, "light missing red eyes #D00000"
-    for p in FILES:
-        t = _read(p)
-        assert "<polygon" in t, f"{p} missing white fangs"
-        assert 'id="tongue"' in t, f"{p} missing tongue"
-        assert t.count("<circle") >= 10, f"{p} need segments + head + glints"
-
-
-def test_head_lunge_and_gulp_pulse():
-    for p in FILES:
-        t = _read(p)
-        assert "1.15 1.15" in t, f"{p} missing head lunge scale 1.15"
-        assert 'id="gulp"' in t, f"{p} missing gulp bulge"
-        m = re.search(r'<ellipse id="gulp".*?attributeName="rx"[^>]*values="([^"]+)"', t, re.DOTALL)
-        assert m, f"{p} gulp missing rx pulse"
-        assert "28" in m.group(1), f"{p} gulp must pulse wide: {m.group(1)}"
-
-
-def test_snake_slither_travel():
-    for p in FILES:
-        t = _read(p)
-        m = re.search(r'<g id="snake".*?<animateTransform[^>]*type="translate"[^>]*values="([^"]+)"', t, re.DOTALL)
-        assert m, f"{p} snake missing travel translate"
-        assert m.group(1) == "-350 0;450 0;-350 0", f"{p} snake travel must be -350/450 loop: {m.group(1)}"
-
-
-def test_food_apple_and_gulp():
-    dark = _read(FILES[1])
-    light = _read(FILES[0])
-    assert "#FFE700" in dark, "dark missing legendary gold apple #FFE700"
-    assert "#9A7B00" in light, "light missing deep gold apple #9A7B00"
-    for p in FILES:
-        t = _read(p)
-        assert 'id="food"' in t, f"{p} missing food group"
-        assert 'id="gulp"' in t, f"{p} missing gulp bulge"
-        m = re.search(r'<g id="food".*?type="scale"[^>]*values="([^"]+)"', t, re.DOTALL)
-        assert m, f"{p} food missing shrink scale"
-        parts = [s.strip() for s in m.group(1).split(";")]
-        assert "0 0" in parts, f"{p} food must shrink to 0: {m.group(1)}"
-
-
 def test_theme_bg():
     light = _read(FILES[0])
     dark = _read(FILES[1])
     assert "#ffffff" in light, "light bg must be #ffffff"
     assert "#0d1117" in dark, "dark bg must be #0d1117"
+
+
+def test_grid_visible():
+    for p in FILES:
+        t = _read(p)
+        assert 'id="grid"' in t, f"{p} missing grid group"
+        lines = re.findall(r'<line[^>]*>', t)
+        vis = [ln for ln in lines
+               if 'stroke-width="2"' in ln
+               and re.search(r'opacit[y]*="([\d.]+)"', ln)
+               and float(re.search(r'opacit[y]*="([\d.]+)"', ln).group(1)) >= 0.3]
+        assert len(vis) >= 20, f"{p} need >=20 visible grid lines, found {len(vis)}"
+    assert "#111111" in _read(FILES[0]) or "#111" in _read(FILES[0]), "light grid must be #111"
+    assert "#FFFFFF" in _read(FILES[1]) or "#fff" in _read(FILES[1]).lower(), "dark grid must be #fff"
+
+
+def test_snake_blocky_segments():
+    dark = _read(FILES[1])
+    light = _read(FILES[0])
+    for c in DARK_FLOW:
+        assert c in dark, f"dark missing flow {c}"
+    for c in LIGHT_FLOW:
+        assert c in light, f"light missing jewel {c}"
+    for p in FILES:
+        t = _read(p)
+        segs = re.findall(r'<rect[^>]*rx="8"[^>]*>', t)
+        assert len(segs) >= 9, f"{p} need 8-10 blocky segments rx=8, found {len(segs)}"
+
+
+def test_head_angry_eyes_fangs():
+    dark = _read(FILES[1])
+    light = _read(FILES[0])
+    assert "#FF3B30" in dark, "dark missing angry red eyes #FF3B30"
+    assert "#D00000" in light, "light missing red eyes #D00000"
+    for p in FILES:
+        t = _read(p)
+        assert 'id="head"' in t, f"{p} missing head group"
+        assert "<polygon" in t, f"{p} missing fangs"
+
+
+def test_snake_patrol_path():
+    for p in FILES:
+        t = _read(p)
+        m = re.search(r'<g id="snake">.*?<animateTransform[^>]*type="translate"[^>]*values="([^"]+)"',
+                      t, re.DOTALL)
+        assert m, f"{p} snake missing patrol translate"
+        pts = [s.strip() for s in m.group(1).split(";")]
+        assert len(pts) >= 5, f"{p} patrol needs waypoints: {m.group(1)}"
+        assert pts[0] == pts[-1], f"{p} patrol not seamless"
+
+
+def test_apple_eaten_mid_loop():
+    for p in FILES:
+        t = _read(p)
+        assert 'id="apple"' in t, f"{p} missing apple"
+        assert "#E5383B" in t, f"{p} missing red apple square"
+        assert "#2DC653" in t, f"{p} missing apple leaf"
+        m = re.search(r'<g id="apple".*?type="scale"[^>]*values="([^"]+)"', t, re.DOTALL)
+        assert m, f"{p} apple missing shrink scale"
+        assert "0 0" in [s.strip() for s in m.group(1).split(";")], f"{p} apple must shrink to 0"
+
+
+def test_score_ticks_up():
+    for p in FILES:
+        t = _read(p)
+        assert "SCORE 08" in t and "SCORE 09" in t, f"{p} missing score texts"
+        assert len(re.findall(r"SCORE \d+", t)) >= 2, f"{p} need 2-3 score texts"
+        assert 'opacity' in t, f"{p} score needs opacity toggles"
+
+
+def test_game_over_flash():
+    for p in FILES:
+        t = _read(p)
+        assert "GAME OVER" in t, f"{p} missing GAME OVER"
+        m = re.search(r'GAME OVER<animate[^>]*values="([^"]+)"', t)
+        assert m, f"{p} game-over missing flash animate"
+        assert "1" in [s.strip() for s in m.group(1).split(";")], f"{p} game-over never flashes"
+
+
+def test_board_border():
+    for p in FILES:
+        t = _read(p)
+        assert 'fill="none"' in t, f"{p} missing board border"
 
 
 def test_identical_geometry_both_themes():
@@ -198,22 +184,8 @@ def test_identical_geometry_both_themes():
     assert strip_colors(dark) == strip_colors(light), "geometry must be identical across themes (ignoring palette)"
 
 
-def test_readme_snake_show():
-    r = Path("README.md").read_text(encoding="utf-8")
-    assert 'width="600"' in r, "README img width must stay 600"
-    assert "?v=7" in r, "README must bump to ?v=7"
-    assert r.count("?v=7") >= 2, "BOTH srcset and src must be ?v=7"
-    assert "?v=6" not in r, "old ?v=6 must be gone"
-    assert "SNAKE SHOW" in r
-    assert "🐍" in r
-    assert "*He's hungry.*" in r
-    assert 'alt="Giant snake eats and leaves"' in r
-    assert 'title="Giant snake eats and leaves"' in r
-    assert "<picture>" in r
-
-
 def test_alt_title_match():
     for p in FILES:
         t = _read(p)
-        assert 'aria-label="Giant snake eats and leaves"' in t, f"{p} aria-label wrong"
-        assert "<title>Giant snake eats and leaves</title>" in t, f"{p} title wrong"
+        assert 'aria-label="Snake game on loop"' in t, f"{p} aria-label wrong"
+        assert "<title>Snake game on loop</title>" in t, f"{p} title wrong"

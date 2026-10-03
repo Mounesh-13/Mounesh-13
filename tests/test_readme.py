@@ -27,13 +27,20 @@ def test_readme_no_resume_leak():
         assert banned not in t, f"banned token {banned}"
 
 
-def test_readme_has_broadcast():
+def test_readme_snake_header_caption():
     t = Path("README.md").read_text(encoding="utf-8")
-    assert "SNAKE SHOW" in t
-    assert "He's hungry" in t
+    assert "# 🐍 SNAKE" in t
+    assert "SNAKE SHOW" not in t
+    assert "theatre" not in t.lower() and "theater" not in t.lower()
+    assert "He's hungry" not in t
+    assert "*Eat. Grow. Repeat.*" in t
 
 
-def test_readme_dance_alt_title():
+def test_readme_version_width_alt():
     t = Path("README.md").read_text(encoding="utf-8")
-    assert "Giant snake eats and leaves" in t
-    assert "Stickman hurrying like a mad man" not in t
+    assert 'width="600"' in t, "README img width must be 600"
+    assert "?v=9" in t, "README must bump to ?v=9"
+    assert t.count("?v=9") >= 2, "BOTH srcset and src must be ?v=9"
+    assert "?v=8" not in t and "?v=7" not in t, "old version must be gone"
+    assert "Snake game on loop" in t
+    assert t.count("Snake game on loop") >= 2, "alt + title must both say Snake game on loop"
