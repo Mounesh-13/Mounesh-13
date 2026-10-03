@@ -71,9 +71,11 @@ def test_act_windows():
     for p in FILES:
         t = _read(p)
         gates = re.findall(r'keyTimes="([\d.;]+)"[^>]*dur="24s"', t)
-        for g in ['0;0.02;0.15;0.19', '0;0.16;0.33;0.37', '0;0.33;0.54;0.58',
-                  '0;0.58;0.79;0.83', '0;0.79;0.96;1', '0;0.94;0.97;1']:
+        for g in ['0;0.16;0.33;0.37', '0;0.33;0.54;0.58',
+                  '0;0.58;0.79;0.83', '0;0.83;0.85;0.93;0.97;1']:
             assert g in gates, f"{p} missing gate {g}"
+        for g in ['0;0.02;0.15;0.19', '0;0.79;0.96;1', '0;0.94;0.97;1']:
+            assert g not in gates, f"{p} stale gated window still present: {g}"
 
 
 def test_ids_present():
@@ -82,19 +84,31 @@ def test_ids_present():
         for i in ['id="act1"', 'id="walker"', 'id="banana"', 'id="act2"',
                   'id="eyes-wide"', 'knock-ripple', 'id="act3"', 'id="mallet"',
                   'id="crack"', 'id="act4"', 'leak-drop', 'big-red-button',
-                  'id="act5"', 'id="spinner"', 'id="blackout"']:
+                  'id="act5"']:
             assert i in t, f"{p} missing {i}"
 
 
-def test_walker_spinner_blackout_master_values():
+def test_no_spinner_loading_blackout():
     for p in FILES:
         t = _read(p)
-        assert 'values="60 0;420 0;420 0;60 0"' in t
-        assert 'keyTimes="0;0.125;0.9;1"' in t
-        assert 'values="0;0;360;360"' in t
-        assert 'keyTimes="0;0.7917;0.8583;1"' in t
-        assert 'values="0;0;0.9;0"' in t
-        assert 'fill="#000"' in t
+        assert 'id="spinner"' not in t, f"{p} still has spinner"
+        assert "loading" not in t.lower(), f"{p} still has loading text"
+        assert 'id="blackout"' not in t, f"{p} still has blackout"
+        assert 'stroke-dasharray="40 30"' not in t, f"{p} still has spinner dasharray"
+
+
+def test_walker_patrol_no_spinner():
+    for p in FILES:
+        t = _read(p)
+        assert 'id="walker"' in t, f"{p} missing walker"
+        assert 'values="60 0;420 0;560 0;560 0;60 0"' in t
+        assert 'keyTimes="0;0.125;0.33;0.9;1"' in t
+        assert 'dur="24s"' in t
+        assert 'PHEW!' in t
+        assert 'values="0;0;1;1;0;0"' in t
+        assert 'keyTimes="0;0.83;0.85;0.93;0.97;1"' in t
+        assert 'values="0;0;360;360"' not in t
+        assert 'fill="#000"' not in t
 
 
 def test_theme_bg_and_stick():

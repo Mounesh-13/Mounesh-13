@@ -2,14 +2,14 @@
 <title>Stickman tries to escape</title>
 <rect x="0" y="0" width="800" height="400" fill="#ffffff"/>
 <rect x="4" y="4" width="792" height="392" rx="18" fill="none" stroke="#111" stroke-width="6"/>
-<g id="act1" opacity="0">
-<animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.02;0.15;0.19" begin="0s" dur="24s" repeatCount="indefinite"/>
+<g id="act1">
 <line x1="40" y1="330" x2="760" y2="330" stroke="#111" stroke-width="4" stroke-linecap="round"/>
 <g id="banana" transform="translate(430,318)">
 <path d="M0,0 Q20,12 42,2 Q22,18 0,0 Z" fill="#FFD23F" stroke="#111" stroke-width="3" stroke-linejoin="round"/>
 </g>
+</g>
 <g id="walker">
-<animateTransform attributeName="transform" type="translate" values="60 0;420 0;420 0;60 0" keyTimes="0;0.125;0.9;1" begin="0s" dur="24s" repeatCount="indefinite"/>
+<animateTransform attributeName="transform" type="translate" values="60 0;420 0;560 0;560 0;60 0" keyTimes="0;0.125;0.33;0.9;1" begin="0s" dur="24s" repeatCount="indefinite"/>
 <g transform="translate(0,230)">
 <g>
 <animateTransform attributeName="transform" type="rotate" values="0;0;-70;-70" keyTimes="0;0.10;0.125;1" begin="0s" dur="24s" repeatCount="indefinite"/>
@@ -27,7 +27,6 @@
 <line x1="0" y1="70" x2="18" y2="100" stroke="#111" stroke-width="5" stroke-linecap="round">
 <animate attributeName="x2" values="18;-18;18;18" keyTimes="0;0.06;0.125;1" begin="0s" dur="24s" repeatCount="indefinite"/>
 </line>
-</g>
 </g>
 </g>
 </g>
@@ -100,16 +99,6 @@
 </g>
 </g>
 <g id="act5">
-<g id="spinner" transform="translate(400,200)" opacity="0">
-<animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.79;0.96;1" begin="0s" dur="24s" repeatCount="indefinite"/>
-<g>
-<animateTransform attributeName="transform" type="rotate" values="0;0;360;360" keyTimes="0;0.7917;0.8583;1" begin="0s" dur="24s" repeatCount="indefinite"/>
-<circle cx="0" cy="0" r="34" fill="none" stroke="#111" stroke-width="8" stroke-dasharray="40 30" stroke-linecap="round"/>
-</g>
-<text x="0" y="70" text-anchor="middle" font-size="16" font-family="sans-serif" fill="#111">loading…</text>
-</g>
-<rect id="blackout" x="0" y="0" width="800" height="400" fill="#000" opacity="0">
-<animate attributeName="opacity" values="0;0;0.9;0" keyTimes="0;0.94;0.97;1" begin="0s" dur="24s" repeatCount="indefinite"/>
-</rect>
+<text x="400" y="200" text-anchor="middle" font-size="30" font-family="sans-serif" font-weight="bold" fill="#111" opacity="0">PHEW!<animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.83;0.85;0.93;0.97;1" begin="0s" dur="24s" repeatCount="indefinite"/></text>
 </g>
 </svg>
