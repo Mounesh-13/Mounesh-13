@@ -5,10 +5,20 @@ def test_readme_exists():
     assert Path("README.md").exists()
 
 
-def test_readme_has_single_img():
+def test_readme_has_picture_themes():
     t = Path("README.md").read_text(encoding="utf-8")
-    assert 'assets/escape.svg' in t
+    assert "<picture" in t
+    assert "<source" in t
+    assert "prefers-color-scheme: dark" in t
+    assert "assets/escape-dark.svg" in t
+    assert "assets/escape-light.svg" in t
     assert t.count("<img") == 1
+
+
+def test_readme_no_single_svg():
+    t = Path("README.md").read_text(encoding="utf-8")
+    assert '"./assets/escape.svg"' not in t
+    assert "'./assets/escape.svg'" not in t
 
 
 def test_readme_no_resume_leak():

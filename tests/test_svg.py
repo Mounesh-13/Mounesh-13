@@ -2,108 +2,113 @@ from pathlib import Path
 import re
 import xml.etree.ElementTree as ET
 
-
-def _svg():
-    return Path("assets/escape.svg").read_text(encoding="utf-8")
+FILES = [Path("assets/escape-light.svg"), Path("assets/escape-dark.svg")]
 
 
-def test_svg_exists_and_size():
-    p = Path("assets/escape.svg")
-    assert p.exists()
-    assert p.stat().st_size < 100 * 1024, "must be <100KB"
+def _read(p):
+    return p.read_text(encoding="utf-8")
 
 
-def test_svg_no_js_or_external():
-    t = _svg()
-    assert "<script" not in t.lower()
-    assert "foreignobject" not in t.lower()
-    # strip mandatory SVG namespace declaration before checking for externals
-    t_no_ns = t.replace('xmlns="http://www.w3.org/2000/svg"', '')
-    assert "http://" not in t_no_ns and "https://" not in t_no_ns
+def test_both_themes_exist_and_size():
+    for p in FILES:
+        assert p.exists(), f"missing {p}"
+        assert p.stat().st_size < 100 * 1024, f"{p} must be <100KB"
 
 
-def test_svg_has_viewbox_and_loop():
-    t = _svg()
-    assert 'viewBox="0 0 800 400"' in t
-    assert 'repeatCount="indefinite"' in t
+def test_both_valid_xml():
+    for p in FILES:
+        ET.fromstring(_read(p))
 
 
-def test_act1_present():
-    t = _svg()
-    assert 'id="act1"' in t
-    assert 'id="walker"' in t
-    assert 'id="banana"' in t
+def test_no_js_or_external():
+    for p in FILES:
+        t = _read(p)
+        assert "<script" not in t.lower()
+        assert "foreignobject" not in t.lower()
+        t_no_ns = t.replace('xmlns="http://www.w3.org/2000/svg"', "")
+        assert "http://" not in t_no_ns and "https://" not in t_no_ns
 
 
-def test_act2_present():
-    t = _svg()
-    assert 'id="act2"' in t
-    assert 'id="eyes-wide"' in t
-    assert 'knock-ripple' in t
-    assert 'begin="4s"' in t
+def test_viewbox_and_loop():
+    for p in FILES:
+        t = _read(p)
+        assert 'viewBox="0 0 800 400"' in t
+        assert 'repeatCount="indefinite"' in t
 
 
-def test_act3_present():
-    t = _svg()
-    assert 'id="act3"' in t
-    assert 'id="mallet"' in t
-    assert 'id="crack"' in t
-    assert 'begin="8s"' in t
+def test_master_clock_no_offset_begin():
+    for p in FILES:
+        t = _read(p)
+        # no begin="Ns" with N > 0
+        for m in re.finditer(r'begin="([\d.]+)s"', t):
+            assert float(m.group(1)) == 0, f"{p} offset begin: {m.group(0)}"
+        assert 'repeatCount="1"' not in t, f"{p} must not have one-shot repeatCount=1"
 
 
-def test_act4_present():
-    t = _svg()
-    assert 'id="act4"' in t
-    assert 'leak-drop' in t
-    assert 'big-red-button' in t
+def test_every_animate_is_master_clock():
+    for p in FILES:
+        t = _read(p)
+        tags = re.findall(r'<animate(?:Transform)?[^>]*>', t)
+        assert len(tags) >= 10, f"{p} too few animates: {len(tags)}"
+        for tag in tags:
+            assert 'begin="0s"' in tag, f"{p} missing begin=0s: {tag[:120]}"
+            assert 'dur="24s"' in tag, f"{p} missing dur=24s: {tag[:120]}"
+            assert 'repeatCount="indefinite"' in tag, f"{p} missing indefinite: {tag[:120]}"
 
 
-def test_act5_present():
-    t = _svg()
-    assert 'id="act5"' in t
-    assert 'id="spinner"' in t
-    assert 'begin="19s"' in t
+def test_keytimes_range_and_monotonic():
+    for p in FILES:
+        t = _read(p)
+        gates = re.findall(r'keyTimes="([^"]+)"', t)
+        assert gates, f"{p} no keyTimes"
+        for g in gates:
+            ks = [float(k) for k in g.split(";")]
+            assert all(0 <= k <= 1 for k in ks), f"{p} keyTimes out of range: {g}"
+            assert ks == sorted(ks), f"{p} keyTimes not monotonic: {g}"
+
+
+def test_act_windows():
+    for p in FILES:
+        t = _read(p)
+        gates = re.findall(r'keyTimes="([\d.;]+)"[^>]*dur="24s"', t)
+        for g in ['0;0.02;0.15;0.19', '0;0.16;0.33;0.37', '0;0.33;0.54;0.58',
+                  '0;0.58;0.79;0.83', '0;0.79;0.96;1', '0;0.94;0.97;1']:
+            assert g in gates, f"{p} missing gate {g}"
+
+
+def test_ids_present():
+    for p in FILES:
+        t = _read(p)
+        for i in ['id="act1"', 'id="walker"', 'id="banana"', 'id="act2"',
+                  'id="eyes-wide"', 'knock-ripple', 'id="act3"', 'id="mallet"',
+                  'id="crack"', 'id="act4"', 'leak-drop', 'big-red-button',
+                  'id="act5"', 'id="spinner"', 'id="blackout"']:
+            assert i in t, f"{p} missing {i}"
+
+
+def test_walker_spinner_blackout_master_values():
+    for p in FILES:
+        t = _read(p)
+        assert 'values="60 0;420 0;420 0;60 0"' in t
+        assert 'keyTimes="0;0.125;0.9;1"' in t
+        assert 'values="0;0;360;360"' in t
+        assert 'keyTimes="0;0.7917;0.8583;1"' in t
+        assert 'values="0;0;0.9;0"' in t
+        assert 'fill="#000"' in t
+
+
+def test_theme_bg_and_stick():
+    light = _read(FILES[0])
+    dark = _read(FILES[1])
+    assert 'x="0" y="0" width="800" height="400"' in light
+    assert 'x="0" y="0" width="800" height="400"' in dark
+    assert "#ffffff" in light, "light bg must be #ffffff"
+    assert "#111" in light, "light stick/frame must be #111"
+    assert "#0d1117" in dark, "dark bg must be #0d1117"
+    assert "#fff" in dark, "dark stick/frame must be #fff"
 
 
 def test_no_placeholders():
-    t = _svg()
-    assert "ACT2" not in t and "ACT3" not in t and "ACT4" not in t and "ACT5" not in t
-
-
-def test_svg_is_valid_xml():
-    ET.fromstring(_svg())
-
-
-def test_dark_mode_halo():
-    t = _svg()
-    assert 'paint-order="stroke"' in t, "texts/fills need paint-order halo"
-    assert "#fff" in t, "white halo underlays required for #111 shapes on dark"
-
-
-def test_loop_timing():
-    t = _svg()
-    # walker must hide after its ~4.5s window
-    assert 'values="1;1;0;0"' in t and 'keyTimes="0;0.15;0.19;1"' in t
-    # outer 24s gates must be narrow and sequential (act2 -> mallet -> leak -> button -> spinner -> blackout)
-    gates = re.findall(r'keyTimes="([\d.;]+)"[^>]*dur="24s"', t)
-    assert '0;0.16;0.33;0.37' in gates, "act2 gate must be 3.8-8.9s"
-    assert '0;0.94;0.97;1' in gates, "blackout must be ~0.5s"
-    starts = []
-    for g in ['0;0.16;0.33;0.37', '0;0.33;0.54;0.58', '0;0.58;0.71;0.75',
-              '0;0.67;0.79;0.83', '0;0.79;0.96;1', '0;0.94;0.97;1']:
-        assert g in gates, f"missing gate {g}"
-        starts.append(float(g.split(';')[1]))
-    assert starts == sorted(starts), "gates must run sequentially"
-    for g in gates:
-        ks = [float(k) for k in g.split(';')]
-        assert all(0 <= k <= 1 for k in ks), f"keyTimes out of range: {g}"
-    # every timed begin must land inside the 24s loop
-    for m in re.finditer(r'begin="([\d.]+)s"[^>]*dur="([\d.]+)s"', t):
-        begin, dur = float(m.group(1)), float(m.group(2))
-        assert 0 <= begin <= 24, f"begin out of loop: {m.group(0)}"
-        assert dur <= 24, f"dur out of loop: {m.group(0)}"
-    # short one-shots must freeze (no strobing), loop gates keep indefinite
-    for m in re.finditer(r'<animate[^>]*begin="(6s|6\.6s|10s|14s|15s)"[^>]*>', t):
-        tag = m.group(0)
-        assert 'repeatCount="1"' in tag, f"one-shot must not strobe: {tag}"
-        assert 'fill="freeze"' in tag, f"one-shot must freeze: {tag}"
+    for p in FILES:
+        t = _read(p)
+        assert "ACT2" not in t and "ACT3" not in t and "ACT4" not in t and "ACT5" not in t
