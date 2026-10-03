@@ -3,6 +3,8 @@ import re
 import xml.etree.ElementTree as ET
 
 FILES = [Path("assets/escape-light.svg"), Path("assets/escape-dark.svg")]
+BANNED_IDS = ["act2", "act3", "act4", "act5", "spinner", "blackout",
+              "knock-ripple", "mallet", "crack", "leak-drop", "big-red-button"]
 
 
 def _read(p):
@@ -39,21 +41,21 @@ def test_viewbox_and_loop():
 def test_master_clock_no_offset_begin():
     for p in FILES:
         t = _read(p)
-        # no begin="Ns" with N > 0
         for m in re.finditer(r'begin="([\d.]+)s"', t):
             assert float(m.group(1)) == 0, f"{p} offset begin: {m.group(0)}"
         assert 'repeatCount="1"' not in t, f"{p} must not have one-shot repeatCount=1"
 
 
-def test_every_animate_is_master_clock():
+def test_every_animate_is_master_clock_8s():
     for p in FILES:
         t = _read(p)
         tags = re.findall(r'<animate(?:Transform)?[^>]*>', t)
         assert len(tags) >= 10, f"{p} too few animates: {len(tags)}"
         for tag in tags:
             assert 'begin="0s"' in tag, f"{p} missing begin=0s: {tag[:120]}"
-            assert 'dur="24s"' in tag, f"{p} missing dur=24s: {tag[:120]}"
+            assert 'dur="8s"' in tag, f"{p} missing dur=8s: {tag[:120]}"
             assert 'repeatCount="indefinite"' in tag, f"{p} missing indefinite: {tag[:120]}"
+        assert 'dur="24s"' not in t, f"{p} still has old 24s clock"
 
 
 def test_keytimes_range_and_monotonic():
@@ -65,50 +67,58 @@ def test_keytimes_range_and_monotonic():
             ks = [float(k) for k in g.split(";")]
             assert all(0 <= k <= 1 for k in ks), f"{p} keyTimes out of range: {g}"
             assert ks == sorted(ks), f"{p} keyTimes not monotonic: {g}"
+            assert ks[0] == 0 and ks[-1] == 1, f"{p} keyTimes must span 0..1: {g}"
 
 
-def test_act_windows():
+def test_seamless_values_first_equals_last():
     for p in FILES:
         t = _read(p)
-        gates = re.findall(r'keyTimes="([\d.;]+)"[^>]*dur="24s"', t)
-        for g in ['0;0.16;0.33;0.37', '0;0.33;0.54;0.58',
-                  '0;0.58;0.79;0.83', '0;0.83;0.85;0.93;0.97;1']:
-            assert g in gates, f"{p} missing gate {g}"
-        for g in ['0;0.02;0.15;0.19', '0;0.79;0.96;1', '0;0.94;0.97;1']:
-            assert g not in gates, f"{p} stale gated window still present: {g}"
+        vals = re.findall(r'values="([^"]+)"', t)
+        assert vals, f"{p} no values lists"
+        for v in vals:
+            parts = [s.strip() for s in v.split(";")]
+            assert len(parts) >= 2, f"{p} values too short: {v}"
+            assert parts[0] == parts[-1], f"{p} not seamless: {v}"
 
 
-def test_ids_present():
+def test_no_banned_ids():
     for p in FILES:
         t = _read(p)
-        for i in ['id="act1"', 'id="walker"', 'id="banana"', 'id="act2"',
-                  'id="eyes-wide"', 'knock-ripple', 'id="act3"', 'id="mallet"',
-                  'id="crack"', 'id="act4"', 'leak-drop', 'big-red-button',
-                  'id="act5"']:
-            assert i in t, f"{p} missing {i}"
+        for b in BANNED_IDS:
+            assert b not in t, f"{p} still contains banned id {b}"
+        assert 'id="act1"' not in t, f"{p} still has act1"
 
 
-def test_no_spinner_loading_blackout():
+def test_dancer_and_banana():
     for p in FILES:
         t = _read(p)
-        assert 'id="spinner"' not in t, f"{p} still has spinner"
-        assert "loading" not in t.lower(), f"{p} still has loading text"
-        assert 'id="blackout"' not in t, f"{p} still has blackout"
-        assert 'stroke-dasharray="40 30"' not in t, f"{p} still has spinner dasharray"
+        assert 'id="dancer"' in t, f"{p} missing dancer"
+        assert 'translate(400,210)' in t, f"{p} dancer not center-stage"
+        assert "#FFD23F" in t, f"{p} banana must stay yellow #FFD23F"
+        assert 'id="banana"' in t, f"{p} missing banana prop"
 
 
-def test_walker_patrol_no_spinner():
+def test_dance_moves_present():
     for p in FILES:
         t = _read(p)
-        assert 'id="walker"' in t, f"{p} missing walker"
-        assert 'values="60 0;420 0;560 0;560 0;60 0"' in t
-        assert 'keyTimes="0;0.125;0.33;0.9;1"' in t
-        assert 'dur="24s"' in t
-        assert 'PHEW!' in t
-        assert 'values="0;0;1;1;0;0"' in t
-        assert 'keyTimes="0;0.83;0.85;0.93;0.97;1"' in t
-        assert 'values="0;0;360;360"' not in t
-        assert 'fill="#000"' not in t
+        assert "0 -14" in t and "0 -10" in t, f"{p} missing bounce"
+        assert "-8;8;-8" in t, f"{p} missing lean/rock"
+        assert "-10;10;-10" in t, f"{p} missing banana tilt"
+        assert t.count("♪") >= 2, f"{p} need 2-3 music notes"
+        assert 'r="16"' in t, f"{p} head r16 missing"
+        assert "stroke-linecap" in t, f"{p} round linecaps missing"
+
+
+def test_no_banned_text_or_effects():
+    for p in FILES:
+        t = _read(p)
+        low = t.lower()
+        assert "loading" not in low, f"{p} still has loading"
+        for w in ["BONK", "CRACK", "PHEW"]:
+            assert w not in t, f"{p} still has {w}"
+        assert 'id="spinner"' not in t
+        assert 'id="blackout"' not in t
+        assert 'stroke-dasharray="40 30"' not in t
 
 
 def test_theme_bg_and_stick():

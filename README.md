@@ -3,7 +3,7 @@
 
 # 📺 STICKMAN SHOW 📺
 
-<picture><source media="(prefers-color-scheme: dark)" srcset="./assets/escape-dark.svg?v=2" /><img src="./assets/escape-light.svg?v=2" width="600" alt="Stickman tries to escape the README — knocks, smashes, plugs the leak" title="Stickman tries to escape the README" /></picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="./assets/escape-dark.svg?v=2" /><img src="./assets/escape-light.svg?v=2" width="600" alt="Stickman dancing on loop" title="Stickman dancing on loop" /></picture>
 
 ### *Don't look at him, he's trying to escape.*
 

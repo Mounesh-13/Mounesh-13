@@ -31,3 +31,8 @@ def test_readme_has_broadcast():
     t = Path("README.md").read_text(encoding="utf-8")
     assert "STICKMAN SHOW" in t
     assert "Don't look at him" in t
+
+
+def test_readme_dance_alt_title():
+    t = Path("README.md").read_text(encoding="utf-8")
+    assert "Stickman dancing on loop" in t
