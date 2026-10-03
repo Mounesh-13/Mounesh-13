@@ -29,5 +29,5 @@ def test_readme_no_resume_leak():
 
 def test_readme_has_broadcast():
     t = Path("README.md").read_text(encoding="utf-8")
-    assert "EMERGENCY BROADCAST" in t
+    assert "HE'S LOOSE" in t
     assert "Don't look at him" in t
