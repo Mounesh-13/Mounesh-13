@@ -10,6 +10,8 @@ def test_readme_has_picture_themes():
     assert "<picture" in t
     assert "<source" in t
     assert "prefers-color-scheme: dark" in t
+    assert "prefers-color-scheme: light" in t
+    assert t.count("<source") == 2
     assert "assets/snake-dark.svg" in t
     assert "assets/snake-light.svg" in t
     assert t.count("<img") == 1

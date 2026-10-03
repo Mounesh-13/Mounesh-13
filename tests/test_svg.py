@@ -137,18 +137,77 @@ def test_head_angry_eyes_fangs_tongue():
         assert t.count("<polygon") >= 3, f"{p} missing fangs + tongue polygons"
 
 
-def test_snake_travels_top_to_bottom():
+def _head_translate(p):
+    t = _read(p)
+    m = re.search(r'<g id="head">.*?<animateTransform[^>]*type="translate"[^>]*values="([^"]+)"[^>]*keyTimes="([^"]+)"',
+                  t, re.DOTALL)
+    assert m, f"{p} head missing grid-step translate"
+    return m.group(1), m.group(2)
+
+
+def _parse_pts(values):
+    return [tuple(int(float(v)) for v in s.strip().split()) for s in values.split(";")]
+
+
+def test_snake_closed_winding_circuit():
+    for p in FILES:
+        values, _ = _head_translate(p)
+        pts = _parse_pts(values)
+        assert len(pts) >= 20, f"{p} circuit needs 20+ waypoints, found {len(pts)}"
+        assert pts[0] == pts[-1], f"{p} circuit not closed"
+        for x, y in pts:
+            assert 0 <= x <= 800 and 0 <= y <= 1600, f"{p} waypoint off-board: {(x, y)}"
+        for need in ((600, 500), (200, 900), (600, 1300)):
+            assert need in pts, f"{p} circuit must eat apple at {need}"
+        diffs = {(b[0] - a[0], b[1] - a[1]) for a, b in zip(pts, pts[1:])}
+        assert diffs <= {(40, 0), (-40, 0), (0, 40), (0, -40), (0, 0)}, f"{p} non-grid step: {diffs}"
+        assert any(d[0] != 0 for d in diffs) and any(d[1] != 0 for d in diffs), f"{p} circuit must wind both axes"
+        dirs = [d for d in
+                [(b[0] - a[0], b[1] - a[1]) for a, b in zip(pts, pts[1:])] if d != (0, 0)]
+        turns = sum(1 for a, b in zip(dirs, dirs[1:]) if a != b)
+        assert turns >= 4, f"{p} boustrophedon needs 90-degree turns, found {turns}"
+
+
+def test_head_grid_step_40px():
+    for p in FILES:
+        values, _ = _head_translate(p)
+        pts = _parse_pts(values)
+        assert pts[0] == pts[-1], f"{p} head not seamless"
+        for a, b in zip(pts, pts[1:]):
+            d = (b[0] - a[0], b[1] - a[1])
+            assert d in {(40, 0), (-40, 0), (0, 40), (0, -40), (0, 0)}, f"{p} head step not 40px grid: {a}->{b}"
+
+
+def test_head_keytimes_equal_spacing():
+    for p in FILES:
+        values, keytimes = _head_translate(p)
+        n = len(values.split(";"))
+        ks = [float(k) for k in keytimes.split(";")]
+        assert len(ks) == n, f"{p} head keyTimes/values length mismatch: {len(ks)} vs {n}"
+        assert ks[0] == 0 and ks[-1] == 1, f"{p} head keyTimes must span 0..1"
+        step = 1 / (n - 1)
+        for k, i in zip(ks, range(n)):
+            assert abs(k - i * step) < 1e-3, f"{p} head keyTimes not equal spacing: {keytimes[:80]}"
+
+
+def test_body_segments_timeshifted_circuit():
     for p in FILES:
         t = _read(p)
-        m = re.search(r'<g id="snake">.*?<animateTransform[^>]*type="translate"[^>]*values="([^"]+)"',
-                      t, re.DOTALL)
-        assert m, f"{p} snake missing patrol translate"
-        pts = [s.strip() for s in m.group(1).split(";")]
-        assert len(pts) >= 5, f"{p} patrol needs waypoints: {m.group(1)}"
-        assert pts[0] == pts[-1], f"{p} patrol not seamless"
-        ys = [float(pt.split()[1]) for pt in pts]
-        assert ys[0] < 0, f"{p} snake must enter from above top, starts y={ys[0]}"
-        assert max(ys) > 1600, f"{p} snake must exit below bottom, max y={max(ys)}"
+        head_values, _ = _head_translate(p)
+        head = _parse_pts(head_values)
+        cycle = head[:-1]
+        assert len(cycle) >= 20
+        grids = re.findall(
+            r'<animateTransform[^>]*type="translate"[^>]*calcMode="linear"[^>]*values="([^"]+)"', t)
+        assert len(grids) >= 15, f"{p} need head+14 segs+tail grid animates, found {len(grids)}"
+        doubled = cycle + cycle
+        for v in grids:
+            pts = _parse_pts(v)
+            assert pts[0] == pts[-1], f"{p} segment not seamless"
+            assert len(pts) == len(head), f"{p} segment must reuse head waypoint list"
+            cyc = pts[:-1]
+            assert any(cyc == doubled[s:s + len(cycle)] for s in range(len(cycle))), \
+                f"{p} segment must be time-shifted rotation of head circuit"
 
 
 def test_three_apples_eaten_vertically():
