@@ -21,7 +21,7 @@
 <text x="32" y="12" font-family="monospace" font-size="13" font-weight="bold" fill="#FFFF00" opacity="0">SCORE 15<animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.5008;0.5408;0.9;1" begin="0s" dur="12s" repeatCount="indefinite"/></text>
 <g id="apple-1" transform="translate(250 300)">
 <g>
-<animateTransform attributeName="transform" type="scale" values="0 0;0 0;0 0;0 0;0 0" keyTimes="0;0.0842;0.1242;0.9;1" begin="0s" dur="12s" repeatCount="indefinite"/>
+<animateTransform attributeName="transform" type="scale" values="1 1;1 1;0 0;0 0;1 1" keyTimes="0;0.0842;0.1242;0.9;1" begin="0s" dur="12s" repeatCount="indefinite"/>
 <rect x="-7" y="-7" width="15" height="15" rx="2" fill="#FF1E22" stroke="#7F1D1D" stroke-width="2"/>
 <rect x="-4" y="-4" width="4" height="4" fill="#FFFFFF" opacity="0.85"/>
 <rect x="2" y="-12" width="7" height="4" rx="2" fill="#2DC653" transform="rotate(15 5 -10)"/>
@@ -31,7 +31,7 @@
 </g>
 <g id="apple-2" transform="translate(450 100)">
 <g>
-<animateTransform attributeName="transform" type="scale" values="0 0;0 0;0 0;0 0;0 0" keyTimes="0;0.2925;0.3325;0.9;1" begin="0s" dur="12s" repeatCount="indefinite"/>
+<animateTransform attributeName="transform" type="scale" values="1 1;1 1;0 0;0 0;1 1" keyTimes="0;0.2925;0.3325;0.9;1" begin="0s" dur="12s" repeatCount="indefinite"/>
 <rect x="-7" y="-7" width="15" height="15" rx="2" fill="#FF1E22" stroke="#7F1D1D" stroke-width="2"/>
 <rect x="-4" y="-4" width="4" height="4" fill="#FFFFFF" opacity="0.85"/>
 <rect x="2" y="-12" width="7" height="4" rx="2" fill="#2DC653" transform="rotate(15 5 -10)"/>
@@ -41,7 +41,7 @@
 </g>
 <g id="apple-3" transform="translate(650 300)">
 <g>
-<animateTransform attributeName="transform" type="scale" values="0 0;0 0;0 0;0 0;0 0" keyTimes="0;0.5008;0.5408;0.9;1" begin="0s" dur="12s" repeatCount="indefinite"/>
+<animateTransform attributeName="transform" type="scale" values="1 1;1 1;0 0;0 0;1 1" keyTimes="0;0.5008;0.5408;0.9;1" begin="0s" dur="12s" repeatCount="indefinite"/>
 <rect x="-7" y="-7" width="15" height="15" rx="2" fill="#FF1E22" stroke="#7F1D1D" stroke-width="2"/>
 <rect x="-4" y="-4" width="4" height="4" fill="#FFFFFF" opacity="0.85"/>
 <rect x="2" y="-12" width="7" height="4" rx="2" fill="#2DC653" transform="rotate(15 5 -10)"/>
