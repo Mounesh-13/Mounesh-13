@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>I SEE DEAD PEOPLE // MATRIX-TERMINATOR PROTOCOL</title>
+  <style>
+    :root {
+      --bg-color: #040604;
+      --card-bg: #060a06;
+      --border-color: #3a1010;
+      --text-main: #c0d8c0;
+      --text-muted: #6b856b;
+      --code-bg: #020502;
+      --link-color: #ff3333;
+      --phosphor-green: #75b870;
+      --terminator-red: #ff1a1a;
+      --glow-red: rgba(255, 26, 26, 0.4);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
+      font-size: 14px;
+      line-height: 1.6;
+      padding: 24px 16px;
+      position: relative;
+    }
+
+    /* CRT scanlines effect */
+    body::after {
+      content: " ";
+      display: block;
+      position: fixed;
+      top: 0; left: 0; bottom: 0; right: 0;
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.35) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.04), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.03));
+      z-index: 9999;
+      background-size: 100% 3px, 6px 100%;
+      pointer-events: none;
+      opacity: 0.9;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding: 12px 18px;
+      background: #080202;
+      border: 1px solid #5a1010;
+      border-radius: 8px;
+      box-shadow: 0 0 20px rgba(255, 0, 0, 0.15);
+    }
+
+    .toolbar-title {
+      font-weight: 700;
+      font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+      font-size: 13px;
+      color: #ff3333;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      letter-spacing: 1px;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      background-color: #ff1a1a;
+      border-radius: 50%;
+      display: inline-block;
+      box-shadow: 0 0 10px #ff1a1a;
+      animation: pulse 1.8s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.85); }
+    }
+
+    .github-box {
+      background: var(--card-bg);
+      border: 1px solid #4a1515;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 0 35px rgba(0, 0, 0, 0.9), 0 0 15px rgba(255, 0, 0, 0.1);
+    }
+
+    .github-box-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 16px;
+      background: #0c0404;
+      border-bottom: 1px solid #4a1515;
+      font-size: 13px;
+      font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    }
+
+    .github-box-header .left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 600;
+      color: #ff4d4d;
+    }
+
+    .github-box-header .right {
+      color: #8b5555;
+      font-size: 12px;
+    }
+
+    .markdown-body {
+      padding: 32px 28px;
+    }
+
+    .markdown-body h1 {
+      color: #ff2222;
+      text-shadow: 0 0 12px rgba(255, 34, 34, 0.5);
+      border-bottom: 1px solid #5a1515;
+      padding-bottom: 12px;
+      margin-bottom: 20px;
+      letter-spacing: 2px;
+    }
+
+    .markdown-body h2 {
+      color: #ff3333;
+      text-shadow: 0 0 10px rgba(255, 51, 51, 0.6);
+      margin-top: 18px;
+      margin-bottom: 14px;
+      font-size: 26px;
+      letter-spacing: 2px;
+    }
+
+    .markdown-body h3 {
+      color: #75b870;
+      border-bottom: 1px solid #244225;
+      padding-bottom: 8px;
+      margin-top: 24px;
+      margin-bottom: 16px;
+    }
+
+    .markdown-body hr {
+      height: 1px;
+      background-color: #3d1212;
+      border: none;
+      margin: 28px 0;
+    }
+
+    .markdown-body pre {
+      background-color: var(--code-bg);
+      border: 1px solid #203520;
+      border-radius: 6px;
+      padding: 16px;
+      overflow-x: auto;
+      font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+      font-size: 12px;
+      line-height: 1.15;
+      color: #75b870;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.8) inset, 0 0 10px rgba(117, 184, 112, 0.05);
+    }
+
+    .markdown-body details {
+      border: 1px solid #3d1515;
+      border-radius: 6px;
+      padding: 12px 16px;
+      margin-bottom: 16px;
+      background: #080303;
+    }
+
+    .markdown-body details summary {
+      cursor: pointer;
+      font-weight: 600;
+      color: #ff4d4d;
+      user-select: none;
+    }
+
+    .markdown-body div[align="center"] img[src*="cyberpunk_fullbody.svg"] {
+      border: 1px solid #5a1515;
+      box-shadow: 0 0 30px rgba(255, 0, 0, 0.35), 0 15px 40px rgba(0, 0, 0, 0.9);
+      border-radius: 8px;
+      margin-top: 8px;
+      margin-bottom: 12px;
+      transition: all 0.3s ease;
+    }
+
+    .markdown-body div[align="center"] img[src*="cyberpunk_fullbody.svg"]:hover {
+      box-shadow: 0 0 45px rgba(255, 0, 0, 0.55), 0 20px 50px rgba(0, 0, 0, 0.95);
+      transform: scale(1.008);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="toolbar">
+      <div class="toolbar-title">
+        <span class="dot"></span>
+        <span>[!] THREAT_LEVEL: CRITICAL // MATRIX-TERMINATOR PROTOCOL ACTIVE</span>
+      </div>
+      <div style="font-family: monospace; font-size: 12px; color: #75b870;">
+        TARGET: MOUNESH-13 // TTY-666
+      </div>
+    </div>
+
+    <div class="github-box">
+      <div class="github-box-header">
+        <div class="left">
+          <span>README.md // CYBER_HORROR</span>
+        </div>
+        <div class="right">
+          <span>PREVIEW: SCARY / MATRIX-TERMINATOR CAPTION</span>
+        </div>
+      </div>
+
+      <div class="markdown-body">
+        <h1>░▒▓ CYBER_GRID // TTY-09 // TERMINAL PHOSPHOR ▓▒░</h1>
+<div align="center">
+
+<!-- RETRO VECTOR ARTWORK: 100% Code-based SVG (Head-to-toe full body with heels & floor grid) -->
+
+<a href="#-ascii--braille-terminal-render">
+  <img src="./assets/cyberpunk_fullbody.svg" alt="Cyber Grid Girl - Full Body Standing Vector" width="480" style="width: 100%; max-width: 520px; border-radius: 8px; display: block; box-shadow: 0 10px 30px rgba(0,0,0,0.6);" />
+</a>
+
+<p><br/></p>
+<p><a href="#"><img src="https://img.shields.io/badge/SYSTEM-ONLINE-75b870?style=for-the-badge&amp;logo=gnubash&amp;logoColor=000000&amp;labelColor=0d1117" alt="Status" /></a>
+<a href="#"><img src="https://img.shields.io/badge/PALETTE-CRT%20PHOSPHOR%20GREEN-75b870?style=for-the-badge&amp;logo=matrix&amp;logoColor=000000&amp;labelColor=0d1117" alt="Theme" /></a>
+<a href="#"><img src="https://img.shields.io/badge/FIGURE-FULL%20BODY%20TO%20FEET-75b870?style=for-the-badge&amp;logo=target&amp;logoColor=000000&amp;labelColor=0d1117" alt="Figure" /></a>
+<a href="#"><img src="https://img.shields.io/badge/CORE-VECTOR%20%2B%20BRAILLE%20%2B%20ASCII-75b870?style=for-the-badge&amp;logo=visualstudiocode&amp;logoColor=000000&amp;labelColor=0d1117" alt="Renderer" /></a>
+<a href="#"><img src="https://img.shields.io/badge/PROTOCOL-MIT-75b870?style=for-the-badge&amp;logo=git&amp;logoColor=000000&amp;labelColor=0d1117" alt="License" /></a></p>
+<p><br/></p>
+<blockquote>
+<p><em>&quot;The sky above the port was the color of television, tuned to a dead channel.&quot;</em><br />
+— <strong>William Gibson, Neuromancer</strong></p>
+</blockquote>
+<p align="center">
+  <a href="#-ascii--braille-terminal-render"><b>[ Text Art Showcase ]</b></a> •
+  <a href="#-terminal-execution-one-liner"><b>[ Run in CLI ]</b></a> •
+  <a href="#-developer-telemetry--bio"><b>[ System Specs ]</b></a> •
+  <a href="#-how-to-use-in-your-github-profile"><b>[ Setup Guide ]</b></a>
+</p>
+
+</div>
+
+<hr />
+<h2>📟 // ASCII &amp; BRAILLE TERMINAL RENDER</h2>
+<blockquote>
+<p><strong>Pure Unicode Matrix Display:</strong> Rendered natively via 8-dot Braille Unicode glyphs (<code>U+2800</code>–<code>U+28FF</code>). Features the complete <strong>standing figure from head to toe</strong>, including her boots, heels, patterned fishnet stockings, and the perspective floor grid below her feet. No image upload required — 100% plaintext that renders in any terminal, editor, or Markdown viewer.</p>
+</blockquote>
+<pre><code class="language-text">⠀⡀⠀⡀⢀⠀⢀⠀⡀⠀⡀⢀⠀⢀⠀⡀⠀⡀⢀⠀⡀⠀⡀⢀⠀⡀⠀⡀⢀⠀⢀⠀⡀⢀⠀⢀⠀⡀⢀⠀⢀⠀⡀⠀⡀⢀⠀⢀⠀⡀⠀⡀⢀⠀⢀⠀
+⠀⡀⠀⡀⠀⠀⠀⠀⠀⠀⡀⠀⠀⠀⠀⠀⠀⠀⢀⠀⠀⠀⠀⢠⠀⠀⠀⠀⢀⣀⣀⠀⡀⠀⠀⠀⠀⡀⠀⠀⢀⠀⡀⠀⡀⢀⠀⢀⠀⠀⠀⡀⠀⠀⢀⠀
+⠀⠄⠀⠄⠠⠀⠠⠀⠄⠀⠄⠠⠀⠠⠀⠄⠀⠄⠠⠀⠄⠀⠄⠠⠀⢠⣤⣾⣿⣿⣿⣷⣶⣦⡀⠠⠀⠄⠀⠀⠠⠀⠄⠀⠄⠠⠀⠠⠀⠄⠀⠄⠠⠀⠠⠀
+⠀⠄⠀⠄⠠⠀⠠⠀⠄⠀⠄⠠⠀⠠⠀⠄⠀⠄⠠⠀⠄⠀⠄⠠⠀⠁⢻⣿⣿⣿⣿⣿⣿⣿⡿⠠⠀⠄⠠⠀⠠⠀⠄⠀⠄⠠⠀⠠⠀⠄⠀⠄⠠⠀⠠⠀
+⠀⠄⠀⠀⠀⠀⠀⠀⠀⠀⠄⠀⠀⠀⠀⠀⠀⠀⠰⠀⠀⠀⠀⠀⠀⣠⡟⠛⠿⠿⠿⠛⢻⡏⠠⠀⠀⠄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠠⠀⠀⠀⠀⠀⠀⠠⠀
+⠀⠂⠀⠂⠐⠀⠐⠀⠀⠀⠂⠀⠀⠐⠀⠂⠀⠀⠐⠀⠂⠀⠂⠐⢀⡟⠐⠂⠁⠀⠀⠒⠸⣿⡀⠐⠀⠂⠀⠀⠐⠀⠂⠀⠂⠐⠀⠐⠀⠂⠀⠂⠐⠀⠐⠀
+⠀⠂⠀⠂⠐⠀⠐⠀⠂⠀⠂⠐⠀⠐⠀⠂⠀⠂⠐⠀⠂⠀⠂⠀⡾⡥⠀⠀⠀⠀⠀⡀⠀⣿⣧⠀⠀⠂⠐⠀⠐⠀⠂⠀⠂⠐⠀⠐⠀⠂⠀⠂⠐⠀⠐⠀
+⠀⠂⠀⠀⠀⠀⠀⠀⠀⠀⠂⠀⠀⠀⠀⠀⠀⠀⠐⠀⠀⠀⠀⣸⢁⣇⣄⠀⠀⠀⣤⡆⠀⠸⣿⣤⢰⡆⠰⠀⠀⠀⠀⠀⠀⠐⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠁⠀⠁⠈⠀⠈⠀⠁⠀⠁⠈⠀⠈⠀⠁⠀⠁⠈⠀⢱⠀⠁⡏⣼⢻⣿⢦⣼⣿⡿⢤⠄⠀⢾⣿⣼⡇⠈⡃⠈⠀⠁⠀⠁⠈⠀⠈⠀⠁⠀⠁⠈⠀⠈⠀
+⠀⡁⠀⠁⠈⠀⠈⠀⠁⠀⡁⠈⠀⠈⠀⠁⠀⠁⢈⠀⢹⡀⢿⢀⣿⢸⡷⠶⠀⠀⠀⠶⣴⠞⠀⣼⢹⣿⠀⡇⠈⠀⡁⠀⠁⢈⠀⠈⠀⠁⠀⠁⠈⠀⠈⠀
+⠀⡁⠀⡀⢀⠀⢀⠀⡀⠀⡁⢀⠀⢀⠀⡀⠀⡀⢈⠀⡀⠙⣿⡻⣿⣸⡇⠀⠀⠀⠀⠀⠀⠀⣴⣿⣾⣿⣸⡃⢈⠀⡁⠀⡀⢀⠀⢈⠀⡀⠀⡀⢀⠀⢀⠀
+⠀⡀⠀⡀⢀⠀⢀⠀⡀⠀⡀⢀⠀⢀⠀⡀⠀⡀⢀⠀⡀⠀⡀⢙⠛⢿⢿⠄⢴⡤⠄⠀⣠⣾⣟⣷⣏⡁⢀⠀⢀⠀⡀⠀⡀⢀⠀⢀⠀⡀⠀⡀⢀⠀⢀⠀
+⠀⡄⠀⠄⠀⠀⠠⠀⠀⠀⡄⠀⠀⠠⠀⠀⠀⠀⢠⠀⠄⠀⠀⠠⠀⠀⠈⣦⣄⣁⣤⣾⣿⣿⣿⣿⣿⡇⠀⠀⢠⠀⠀⠀⠀⢠⠀⠀⠀⠀⠀⠄⠀⠀⠠⠀
+⠀⠄⠀⠄⠠⠀⠠⠀⠄⠀⠄⠠⠀⠠⠀⠄⠀⠄⠀⠀⠀⠀⠁⠀⠀⠀⠘⣿⣿⣿⣿⣿⣿⡟⠿⢿⣏⣄⣠⣄⣠⠀⠄⠀⠄⠠⠀⠠⠀⠄⠀⠄⠠⠀⠠⠀
+⠀⠄⠀⠄⠠⠀⠠⠀⠄⠀⠄⠠⠀⠠⠀⠄⠀⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⠟⠿⣿⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⢢⠀⠄⠠⠀⠠⠀⠄⠀⠄⠠⠀⠠⠀
+⠀⠆⠀⠀⠐⠀⠀⠀⠀⠀⠂⠀⠀⠠⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠹⣦⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠁⠀⠰⠀⠐⠀⠀⠀⠂⠀⠀⠐⠀
+⠀⠂⠀⠂⠐⠀⠐⠀⠂⠀⠂⠀⠀⠀⠀⠀⠀⠀⠀⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣰⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⢘⠂⠐⠀⠐⠀⠂⠀⠂⠐⠀⠐⠀
+⠀⠂⠀⠂⠐⠀⢐⠀⠀⠀⠀⠀⠀⠀⠀⠀⠠⠄⠈⠁⠀⠀⠀⠀⠀⠀⠀⢠⠀⢠⣾⣿⠏⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⠂⠐⠀⠐⠀⠂⠀⠂⠐⠀⠐⠀
+⠀⠃⠀⠁⠀⠀⠊⠀⠀⠀⠀⠀⠀⠠⠀⠉⠀⠁⢨⣶⣶⣿⣿⣿⣿⣿⣿⣿⣶⣿⣿⣷⣦⣤⣄⣀⡀⠀⠀⠀⠀⠀⠀⠈⠀⠈⠀⠈⠀⠀⠀⠁⠈⠀⠈⠀
+⠀⠁⠀⠁⠀⠁⠀⠀⠀⠀⠀⠈⠁⠈⠀⠁⠀⠁⢻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣯⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀⡁⠁⠈⠀⠈⠀⠁⠀⠁⠈⠀⠈⠀
+⠀⡁⠀⡁⢈⠀⢐⢀⠀⠀⠀⠀⠀⢈⠀⡁⠀⠁⢈⠻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀⡁⡁⢈⠀⢈⠀⡁⠀⡁⢈⠀⢈⠀
+⠀⡀⠀⡀⢀⠀⢀⠀⡁⠀⠀⠀⠀⠘⢄⠄⠀⡀⢈⠀⣸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣯⡁⠀⠀⠀⢀⠀⡀⢀⠀⢀⠀⡀⠀⡀⢀⠀⢀⠀
+⠀⡀⠀⡀⢀⠀⢀⠀⡀⠀⡃⣄⠀⠀⠈⠻⣆⡀⢀⠀⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⡃⡀⠀⠀⠀⢨⠀⡀⢠⠀⢀⠀⡀⠀⡀⢀⠀⢀⠀
+⠀⠄⠀⠄⠠⠀⠠⠀⠄⠀⢠⣿⣦⡀⠀⠀⠈⠻⣶⣠⣼⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠀⠄⠀⠀⠀⠀⢠⠀⠄⠠⠀⠠⠀⠄⠀⠄⠠⠀⠠⠀
+⠀⠄⠀⠄⠠⠀⠠⠀⠄⠀⠜⠿⣿⣿⣦⡀⠀⠀⠈⠉⠛⠛⠿⠿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡟⠠⠀⠄⠄⠀⠀⠀⠰⠀⠄⠠⠀⠠⠀⠤⠀⠄⠠⠀⠠⠀
+⠀⠆⠀⠄⠠⠀⠠⠀⠄⠀⠆⠀⠀⠨⠉⠻⠀⠀⠀⠀⠀⠀⣶⣦⣼⣟⢻⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⠆⠀⠀⠀⠀⠀⠄⠄⠠⠀⠰⠀⠄⠀⠆⠠⠀⠠⠀
+⠀⠂⠀⠂⠐⠀⠐⠀⠂⠀⠂⠐⠀⠐⠀⠂⢦⠀⠀⠀⠀⠀⠈⢿⣷⣿⣿⣿⣾⣿⣿⣿⣿⣿⣷⣄⠀⠂⠰⠀⠀⠀⠀⠘⠂⠐⠀⠐⠀⠒⠀⠂⠐⠀⠐⠀
+⠀⠂⠀⠂⠐⠀⠐⠀⠂⠀⠂⠐⠀⠐⢀⣢⣼⡄⠀⠀⢤⠐⣆⠈⢿⣿⣿⣿⣿⡿⣿⣿⣿⣿⣿⣿⣷⣦⡐⠀⠀⠀⠀⠀⠃⠐⠀⠐⠀⠒⠀⠂⠐⠀⠐⠀
+⠀⠃⠀⠂⠐⠀⠘⠀⠃⠀⠃⣠⣤⣾⣿⣿⣿⣿⣦⣑⣌⣢⣸⣧⡌⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡆⠀⠀⠀⠀⢸⠘⠀⠘⠀⠃⠀⠃⠀⠀⠘⠀
+⠀⠁⠀⠁⠈⠀⠈⠀⠁⠘⠿⣿⢿⣿⡅⠙⢿⣿⣿⣿⡿⢿⣿⣿⣷⣾⣿⣿⣿⣿⣿⣿⡿⢿⣿⣿⣿⣿⣿⣿⢁⠀⠀⠀⠀⠈⠀⠈⠀⠁⠀⠁⠈⠀⠈⠀
+⠀⡁⠀⡁⢈⠀⢈⠀⠁⠀⡁⠀⣾⣿⡟⡆⠀⠈⠉⠉⠀⠈⠿⠿⣿⣿⡿⠋⢹⣿⣿⣷⢴⣾⣟⢿⣿⡟⠛⣡⡎⠀⠀⠀⠀⣌⠀⢈⠀⡁⠀⡁⢈⠁⢈⠀
+⠀⡁⠀⡀⢀⠀⢈⠀⡀⠀⡁⢀⠈⢻⠿⣦⣀⠀⠀⠀⠀⠀⠀⠀⢀⣾⣷⣄⣾⣿⣿⣿⣿⣿⣿⣶⣎⠿⣺⡉⠳⡄⡀⠀⠀⢹⠀⢀⠀⣀⠀⡁⢀⡀⢈⠀
+⠀⡀⠀⡀⢀⠀⢀⠀⡀⠀⡀⢀⠀⢀⠀⡀⡀⠀⠀⠀⠀⠀⠘⣦⣾⣿⣿⣿⣿⣿⣿⣿⣿⡿⠛⠛⠻⡇⣌⣺⣦⠾⢷⡀⠀⠘⡀⢀⠀⡀⠀⡀⢀⠀⢀⠀
+⠀⡄⠀⠄⠠⠀⠠⠀⠄⠀⡄⠠⠀⠠⠀⠄⠄⠀⠀⠀⠀⠀⠀⠈⢻⣿⣿⣿⣿⣿⣿⣿⠟⠀⠀⠀⠀⠘⢿⣷⣝⠻⢆⡙⢦⡠⢤⡠⠀⠄⠀⠄⠠⠀⠠⠀
+⠀⠄⠀⠄⠠⠀⠠⠀⠄⠀⠄⠠⠀⠠⠀⠄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠻⠿⢿⠿⠿⠋⠁⠀⠀⠀⠀⠀⠀⠀⡙⢟⢳⣌⠛⣤⣹⣆⠀⠠⠀⠀⠄⠠⠄⠠⠀
+⠀⠆⠀⠄⠠⠀⠠⠀⠄⠀⠄⠠⠀⠠⠀⠄⠰⣄⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠄⠠⠑⣿⢳⢟⠡⣭⠣⣄⠡⠀⠄⠠⠀⠠⠀
+⠀⠂⠀⠂⠐⠀⠐⠀⠂⠀⠂⠐⠀⠐⠀⠂⠐⣿⣿⣿⣿⣶⣶⣶⣶⣦⣤⠀⢀⣀⣤⣤⣤⣶⣶⣶⣶⣶⣴⠀⠐⠀⠆⡄⠸⢳⣌⢲⡮⠳⣃⠂⠐⠀⠐⠀
+⠀⠂⠀⠂⠐⠀⠐⠀⠂⠀⠂⠐⠀⠐⠀⠂⠀⠿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠀⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⡗⠀⠐⠀⠂⠐⠂⠸⠿⢳⣄⠷⠎⠳⣢⠀⠐⠀
+⠀⠃⠀⠁⠈⠀⠈⠀⠁⠀⠃⠀⠀⠘⠀⠁⠀⠀⠀⢩⠉⠉⠉⣹⣿⣿⣿⠀⢸⣿⣟⠛⠛⢻⣿⣿⣿⣿⡇⠀⠈⠀⠁⠀⠁⠘⠀⠙⢿⣷⣌⠓⠘⣳⣎⠀
+⠀⠁⠀⠁⠈⠀⠈⠀⠁⠀⠁⠈⠀⠈⠀⠁⠀⠁⠠⠈⠀⢀⡀⠈⢿⣿⣿⠁⠈⣿⣷⠶⠄⢸⣿⣿⣿⣿⠉⠀⠈⠀⠁⠀⠁⠈⠀⠈⠀⠙⢿⣷⣾⡟⠋⠀
+⠀⡁⠀⡁⢈⠀⢈⠀⠁⠀⡁⢈⠀⢈⠀⡁⠀⠁⠘⠀⠀⠈⠁⠀⣾⣿⣿⡅⠀⢹⡇⠀⠀⢠⣿⣿⣿⣿⢀⠀⢈⠀⡁⠀⡁⢈⠀⢈⠀⡁⠀⡙⢉⠀⢈⠀
+⠀⡀⠀⡀⢀⠀⢀⠀⡀⠀⡁⢀⠀⢀⠀⡀⠀⡀⢀⣇⠛⠀⠀⠀⠿⣿⣿⣇⠀⠘⠃⢀⡀⠈⣿⣿⣿⡏⢀⠀⢀⠀⡀⠀⡀⢈⠀⢀⠀⡀⠀⡀⢀⠀⢀⠀
+⠀⡄⠀⡀⢀⠀⢀⠀⡀⠀⡀⢀⠀⢀⠀⡀⠀⡀⠀⠀⢏⠀⠲⠦⠀⣻⣿⣿⠀⠀⡀⠈⠀⢠⣿⣿⣿⡇⢀⠀⢀⠀⡀⠀⡀⢀⠀⢀⠀⡀⠀⡀⢀⠀⢀⠀
+⠀⠄⠀⠄⠠⠀⠠⠀⠄⠀⠄⠠⠀⠠⠀⠄⠀⠄⠀⠀⠸⣦⡀⠀⠀⣾⣿⣿⠠⠀⡿⠀⠀⠘⣿⣿⣿⠅⠠⠀⠠⠀⠄⠀⠄⠠⠀⠠⠀⠄⠀⠄⠠⠀⠠⠀
+⠀⠄⠀⠄⠠⠀⠠⠀⠄⠀⠄⠠⠀⠠⠀⠄⠀⠄⠠⠀⠠⠘⣇⢀⡀⣾⣿⣿⣷⠀⠅⠘⠇⠀⣻⣿⣿⠄⠠⠀⠠⠀⠄⠀⠄⠠⠀⠠⠀⠄⠀⠄⠠⠀⠠⠀
+⠀⠆⠀⠀⠐⠀⠐⠀⠀⠀⠆⠀⠀⠰⠀⠂⠀⠂⠐⠀⠐⠀⢸⣮⣷⣿⣿⣿⣿⠀⠲⠀⠀⢸⣿⣿⣿⠀⠐⠀⠀⠀⠆⠀⠀⠰⠀⠐⠀⠂⠀⠂⠐⠀⠰⠀
+⠀⠂⠀⠂⠐⠀⠐⠀⠂⠀⠂⠐⠀⠐⠀⠂⠀⠂⠐⠂⠐⠀⠐⢻⣿⣿⣿⣿⣿⠆⠀⠀⢠⣼⣿⣿⣿⡆⠐⠀⠐⠀⠂⠀⠂⠐⠀⠐⠀⠂⠀⠂⠐⠀⠐⠀
+⠀⠂⠀⠂⠐⠀⠐⠀⠂⠀⠂⠐⠀⠐⠀⠂⠀⠂⠐⠀⠐⠀⠐⠘⣿⣿⣿⣿⣿⡆⠐⡀⠬⣿⣿⣿⣿⣷⠐⠀⠐⠀⠂⠀⠂⠐⠀⠐⠀⠂⠀⠂⠐⠀⠐⠀
+⠀⠃⠀⠁⠈⠀⠈⠀⠁⠀⠃⠈⠀⠘⠀⠁⠀⠁⠀⠀⠈⠀⠀⠀⣿⣿⣿⣿⣿⣿⠀⢹⣷⣿⣿⣿⣿⣶⢻⠀⠈⠀⠁⠀⠁⠘⠀⠈⠀⠁⠀⠁⠈⠀⠈⠀
+⠀⡁⠀⠁⠈⠀⠈⠀⠁⠀⠁⠈⠀⠈⠀⠁⠀⠁⠈⠁⠈⠀⠈⠈⣿⢿⡿⣿⣿⣿⡇⠀⢹⡿⢿⣿⣿⣿⠇⢃⠈⠀⠁⠀⠁⢈⠀⠈⠀⠁⠀⠁⠈⠀⠈⠀
+⠀⡁⠀⡁⢈⠀⢈⠀⡁⠀⡁⢈⠀⢈⠀⡁⠀⡁⢈⠀⢈⠀⢈⠀⠁⠘⠃⢠⣿⢿⣇⢀⠈⣷⠎⠿⢆⣽⣤⡼⣇⠀⡁⠀⡁⢈⠀⢈⠀⡁⠀⡁⢈⠀⢈⠀
+⠀⡀⠀⡀⢀⠀⢀⠀⡀⠀⡀⢀⠀⢀⠀⡀⠀⡀⢀⡀⢀⠀⣀⠀⡁⠀⣤⡞⠉⣿⣿⢀⠀⣹⣄⠈⠻⣿⣧⠀⢹⠀⡀⠀⡀⢀⠀⢀⠀⡀⠀⡀⢀⠀⢀⠀
+⡀⣄⢀⢀⢀⠀⡀⡀⡀⢀⢄⢀⠀⠀⡀⡀⠀⢀⢀⢀⠠⡀⡀⡀⣼⠀⠙⠁⢀⣾⣿⢀⢀⢈⣟⣤⣾⢻⡛⣢⣼⣀⡄⡀⡀⡠⢀⢀⢀⢀⡀⡀⡀⡀⢀⢀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠸⠀⠀⠴⢋⣻⣿⠀⠀⠀⠹⡿⣿⣾⣿⣿⣿⠇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡇⡾⠂⢐⣿⣿⠀⠀⠀⠀⢳⣿⣿⣿⣿⣿⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢻⣀⣴⣿⣿⡏⠀⠀⠀⠀⠀⢿⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀⠘⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⣿⣿⣿⠁⠀⠀⠀⠀⠀⠀⢻⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣿⣿⣿⣿⣦⡄⠀⠀⠀⠀⠀⠸⣿⣿⣿⣧⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀⢸⣿⣿⣿⣿⣟⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⡀⠀⠄⠀⠀⠀⠀⠀⠀⠀⢀⠀⠀⠀⡀⠀⠀⠀⠀⠀⠀⠀⢸⣿⣿⣿⣿⣿⣇⠀⠀⠀⠀⠀⠘⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⢀⠀⠀⠀
+⡀⠁⡀⠀⠈⢀⠀⢀⠁⠠⠀⡘⠀⡄⠀⠁⢀⠁⠀⠀⠈⠀⠀⠀⠁⣼⣿⣿⣿⣿⣿⣿⡀⠀⠀⠁⠀⠀⢻⣿⣿⣿⣿⡄⠁⠀⠄⠀⡀⠀⠀⠡⠀⠀⠈⠄
+⠀⠈⠀⠈⢀⠀⢀⠀⠀⠁⠀⠀⠐⠀⠈⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⣿⣿⣿⣿⣿⣿⣿⡇⢀⠀⠀⠀⠀⢸⣿⣿⣿⣿⣇⠈⠀⠈⡀⠐⠀⠁⠀⠁⠀⢂⠀
+⠈⢀⠈⢀⠈⢀⠂⢀⠂⢀⠃⢀⠁⠀⠀⠀⠀⢀⠀⠀⠀⠀⠀⢀⣿⣿⣿⣿⣿⣿⣿⣿⠀⠈⠀⠀⠀⠀⢸⣿⣿⣿⣿⣿⠀⠀⡀⠀⠀⠁⠀⠁⠀⠁⠀⠁
+⢀⠂⢀⠂⠀⠂⢀⠂⠀⠂⠀⠂⢀⠂⢀⠀⢀⠀⠐⠀⠐⠀⢀⣼⣿⣿⣿⣿⡿⠙⣿⡟⠀⠀⠀⠀⠀⠀⢸⣿⣿⣿⣿⣿⠐⠀⠀⠀⠁⠀⠁⠀⠀⠀⢀⠀
+⠂⠀⠄⠀⠌⠀⠌⠀⠄⠀⠀⠀⠈⠀⠀⠀⠄⠀⠄⠀⣠⣴⣿⠿⢿⣿⣿⣿⡇⢰⣿⢷⡆⢰⡇⢰⡗⢰⣾⣿⣿⣿⣿⣿⣇⠀⠀⢀⠀⢂⠀⢂⠀⢀⠀⠠
+⢀⠀⠀⠀⠀⡀⠀⡐⠀⡀⠀⠀⠀⢀⠀⢀⠀⢀⠀⣰⣿⣿⣿⣿⣿⣿⡿⢿⡃⢸⡇⣘⡇⢘⡇⠘⣇⣘⣿⣿⣿⣿⣿⣿⣿⢐⡄⠀⠀⠀⠀⠀⢀⠀⢀⠀
+⠂⠀⡐⠀⡐⠀⢐⠀⢀⠂⢀⠂⠀⡂⠀⡂⠀⡀⠀⠘⠒⠺⠛⢻⠓⢸⣒⢺⡗⢒⡗⢒⣇⣒⣇⣂⣗⣒⣻⣷⣽⣿⣿⣿⢻⠒⠑⠀⠐⡀⠐⡀⠀⡂⠀⢂
+⠀⠀⠀⠠⠀⠀⠀⠀⠄⠀⠄⠀⠀⠀⠠⠀⠀⠀⠀⠄⠀⠄⠀⠀⠀⠰⠀⠀⠀⠀⠄⠀⠄⠀⠀⠀⠠⠀⠸⠘⠛⠛⠋⠄⠀⠄⠀⠀⠀⠠⠀⠠⠀⠐⠄⠀
+⡀⠁⢀⠁⢀⡈⠀⡈⠀⢀⠁⢀⠁⠀⡈⠀⡈⠀⢀⠀⠀⡁⠀⡁⠀⢈⠀⢈⠀⠀⡁⠀⣁⠀⢈⠀⢈⡀⠀⡀⠀⢁⠀⢁⠀⠈⡀⠈⡀⠀⢁⠀⢁⠀⠀⡀
+⠀⠀⠆⠀⠔⠀⠠⠀⠀⠆⠀⠐⠀⠠⠀⠀⠄⠀⠀⠀⠠⠀⠀⠄⠀⠀⠀⠠⠀⠀⠄⠀⠀⠀⠠⠀⠀⠄⠀⠀⠀⠠⠀⠀⠄⠀⠄⠀⠠⠀⠀⠄⠀⠆⠀⠠
+</code></pre>
+<p><br/></p>
+<details>
+<summary><b>[▶ Click to expand Wide Banner Grid Braille Art]</b></summary>
+
+<pre><code class="language-text">⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢶⣿⣷⣦⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢰⠏⠉⠉⣇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣮⣤⣠⡆⢻⣴⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠲⣿⡏⠀⠘⣱⡿⠔⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢱⣭⣾⣿⡿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⢿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣠⣤⣠⣠⣞⣁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢿⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣄⠐⢦⣀⣿⣿⣿⣿⣿⣿⡟⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠛⠳⠀⠉⢩⣿⣿⣿⣿⣟⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣠⣤⣠⣠⡻⣿⣿⣿⣿⣷⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⢻⣏⠛⠛⠻⢿⡿⣿⣿⣿⣿⢿⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠀⠀⠐⢾⣿⣿⣿⠟⠻⣵⣶⢄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⡀⠀⠈⠛⠋⠁⠀⠀⠈⠳⠷⣦⢀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠸⣿⠿⣿⡇⢶⣿⣿⣿⡇⠀⠀⠿⣷⣧⢄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢽⡾⣽⣧⢸⡷⣿⣿⠃⠀⠀⠀⠈⠳⠋⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⣷⢿⣿⠈⡟⣿⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢹⣿⣿⡆⣿⣿⣗⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢻⣿⣇⢾⣿⣿⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+</code></pre>
+</details>
+
+<details>
+<summary><b>[▶ Click to expand Classic 7-Bit ASCII Version (@%#*+=-:. )]</b></summary>
+
+<pre><code class="language-text">`- ^ :  ' , :  ` : ^ _ '' _ = : -    ' , : '' _ = : -- = = -` _ ^ .
+`' ; _  : ^ , `. _ = , '' , &gt; , .c|5eEs^ ' `. , ; , -' &gt; ; '. , ; -`
+ ' = ,  ' = _ `- _ ^ , .` _ ; ,|V@@@@@@KUS*.- _ ^ , .. = ; -` , ^ '.
+`' = ,  ' = _ `. _ ^ , -. _ = =?##$%%m%mX@m:  _ = , .- , ; -` ^ , '-
+ - = _  ' ^ ,  . , ^ , `  , ^ `TbG#@@@Apour ` _ &gt; , -- ^ ^ '. , ^ -`
+ ' ; _  ' ^ ,  . , , _ `  _ ^ ah;`z;;=''4s _  _ ; , .. ^ = :- , ^ -`
+ - ^ _  ' ; ,  . : , , '' ' '^E;?     ` ]@    _ = , .. ^ ; -` = , -.
+`- , :  : = _ '' _ ^ ^ .` : '[v         vbo . : = _ .- ^ ; -  ^ ^ -`
+ ' , '  ' ^ ,  ` ^ = : '. : I;,-      c `q@r'c: &gt; : .' = ^ '` _ ; -
+ ' ^ :  ' = ,  ` , , , .` `=i:C(s  :!k*  'VEzoz L ^ -' = = -  ^ = '`
+`' = _  ' = : `- : ^ = '! '7&gt;2ubhvIX@d&lt;+  y$]5l c ^ .. = &gt; -` = ; :.
+`- = _  ' = ' .- : ^ = 'T i&gt;v9v%nF'`^ 7|i|,?ZnV &lt;!- -. , &lt; -. ^ ; -.
+ - ; ,  ' = ,  . , ; _  Jfufaw7U:     'TI_ qy1$-3*` -' ^ = :. = = -.
+ ' ; ^  - = =  ` = ; _ --c5ukU36          9@yewc7 _ .' = ^ :- = , -.
+`- , ,  : = ^ `. , = , -` -'[o4]} T}&lt;   rkquZT_ ^ , -' ^ = :- = ^ -.
+.' ^ _ `, = _ .' : , ; .  : = _.|- r  r]@H6XUX{ = ^ .` , &gt; '` = ; -`
+`' = _ `_ ; : `- _ , =`:''&lt;.r = iAFLcyd8H@@@Xw* = ,  ` ^ &lt; -` = ; '.
+ ' ; ,  ' = _  ` , ; _          vm@@@mOXdF5kZ+&lt;:z-+`.  = ; -` = = '.
+ ' &gt; =  - = ^  ` = .              ,VjP@@&amp;           ,= ; ^ :. ^ ^ '.
+ - &gt; ,  - ^ ^ `- _                  'nCh$/           ;;- ^ :. ^ = -`
+ ' &gt; : `: ^ : -                      sF1U?            *_ &gt; '` = = .`
+`' = _  _ &lt;           _!              &gt;m@.            ^! &lt; .` ; ; -`
+`' , _''             &lt;r              u@@L             ^! &gt; -` = ; '-
+`' : =`          ':c `  .&gt;!!rrc!Tn,*X@K^       '      &lt;= = :. , = :'
+ . &gt;:         '' ^ ^ tU%@@@@@@@@@@%b%$mh9j17s.        r, ^ '. ^ = '-
+ - &lt;,       ' .- _ _ O@$@$%%%%$$$$@be$@@@@@@@@U5      &lt;: &gt; .  ; ^ -.
+ ' ^ =        -  _ ; *X@######@@###@U&amp;&amp;%#$%%%%@9     -;- ; .  = = .
+ ' ^ ^;-      -: = , '_3%###@@#####$@@@@@####$UI     _^: ^ '. , = -`
+`- ^ ^  ,      ;/; _ ;  m@#@@#######@@####@##$x;     ;'^ = -- ^ ^ _'
+`- &lt; ^  ' !     ,n1c - `A@#@@#@##@@@@@@####$@b!-     ! , &gt; '` = = '-
+ ' &gt; _ `_ :7x     {wf/` w$%##@#@#@#@@@@#@#$@E'.&gt;     ; = ; '  = ; -.
+ ' = , `' ^V@X)     sxtqK@@@@##$@#@###@@@#@p` ''     &gt; , &gt; '` = = -`
+`' ^ =  . =3dGmh*     ;r?iZSG@@@@@####@@#@E,  -_     ^ = ; '- = = '`
+`- ; =  ' &lt; _-&gt;F3I        &gt;^-kdaHm@@@#@@$@; ` :-     `^, = :- ^ ; :'
+`' &gt; , `_ ; ^    *&lt;       )@43ylw2aHm@#@$@v   ^ `     c= ; '` = ; ''
+ ' &gt; ^ `: = ; `' -+-       !Hk2hA9[5PX@@###kL   &gt;      * &lt; '` ; ; '-
+ ' &gt; , `' &lt; ^    /)3   :':} =UG6wVdt{3d8#@#@@kv &gt;      ! ; -. ^ ; '`
+`' ; = `, ^ _ &lt;eG@@mC,c=s`F2 &lt;UKbkUOku5H8@@#$@@b[.     :,: '. ^ ; '`
+`' ; = `' T3GA##j%@@@dYq]dE@X,F&amp;GbUw2ol52VO#@#%@$z      ;' '` = = '-
+-: &gt; _ -: 5UOj%2 !um@@@$]@@#@8A@@KGy[I|77IaUK%@@@3:     `= -` ^ ; ''
+`' ; =  ' , ^E@d)^ _,rJ. .G8%@@$Vo{]VO2vvtEYhw]{T{/-    ^! '` ^ ^ ::
+ ' &gt; =  ' &gt; ^YU@ws          `,ekr-c1d%dlokP7}tx'vS}-    _T .` ; ; ''
+ - &gt; = `: = ^ ,LF3*          &lt;SxE5G&amp;#@K@mmHK&amp;5Ieu `;/    i '. ; &gt; '-
+ ' ; =  ' &lt; &gt;    :^       ;E5hwwm@@$@XXXVx/crklr7ZuslI:  &gt; '- &gt; = -`
+.: &gt; ,  : ! ;  ' &gt;r        `t4wH#%&amp;H%HXhT     :6AnI[Z/z&lt; .^'- ; ^ '.
+.: &gt; , `_ + , `: &gt;:          sk@@@8XO]('        7jk1?v3;r&gt;.;' _ , :'
+`- ; = `: = _ .: ^            'uo]n7=            zfntiJ(3L&lt;  :^ ; :'
+ . = =  : = , .: _ c                            - ':iU(Z3zlz: = ^ '.
+`- ; = `' = = .' , hHEnFJT*+c&gt;.          =!!r!, ^ ^ r!`=CT|+Iv*/, '.
+`' &gt; ^  ' &lt; =  - ; f@@@@@@@@@@@8i !}jdH8&amp;@@@@@@&amp;&lt; = -+,'`[]}n*JsL  `
+-: &gt; ^ `' r = `' ! &gt;EU#@@@@@$@%@n T@@@@@@@@@@#@P. = :' + 7P[x|5zr*T:
+`' ; ,  : &lt; _ `: ; -_r7FJ(J(njE6l !2kqwqwhpdhwqt- ; .  , ! &lt;kHjsns&gt;T
+ ' ; =  : ; , `: ^ --&lt;z?==&lt;cFnS]n ,C{L/+;veeoeuJ' &gt; .  = &gt; ` *U#Y!v9
+ ' &gt; , `' ; _ `' ^ _ &lt;Tc!7z&gt;clk]5.`}{sCL&gt;styynur  &gt; -` ^ &lt; -` ;JU@8o
+ ' &gt; ;  : = ^  ' &gt; _ :sz*sc&gt;?ItZy; !uJ;c&gt;JnInZo'` ; '. , = '` , ;+,
+.' ; _  ' &gt; ^ `: &lt; :  *vf&gt;!^vu{3xz _}v&lt;&lt;;|o1t[3 ' = :. ^ &gt; -` ^ = '.
+.' ; _  ' &gt; , `: ; , `rcz*?L!?{Y2J -!&lt;L7&lt;?ioxZT ^ ; '. ^ &gt; :` = ^ '.
+.- = ^  : ; , `: = ^ .`_s^7f/*vo53-`!c=!+(Zll5r = &gt; -` = &gt; -` , ^ ''
+`: &gt; ^ `' &lt; , `: ; = `- )(+&lt;!&lt;3eI{&gt; =u,==(Yt1o_ , + '` ^ &lt; '` ; = '-
+`_ ; ,  ' ; ^ `' &gt; ,  ' ,IF+&gt;r)|jxT .T?C=&lt;Fj]o` : + '. ^ ; '` = &gt; :.
+`: &gt; , ._ ; = `' &gt; _ `_ , )zFJvlyI{'-s!T!/}to5  ^ ; '` = ; :' ^ &gt; :`
+`- &gt; ^  _ ; ^ `: = _ ', ^ ;3CI{13C[v C!;&lt;}]33u  , &gt; '. , &lt; '` = = '-
+.- ; =  ' &lt; _ .' &gt; ^ .: ^ :JIC7jx1oI.&lt;+!z7o5Ew. ^ = '. _ ! -  ; ^ ''
+.: = ^  ' &gt; ^  : ; = -: = :`fIFowoh1`&lt;&lt;/3FoEqo( : ; -  ^ ; '` ^ = :-
+`: &gt; ^ `_ = ;  - &lt; , .' &gt; ^ ?w5x2ywo-:|?s}kknIt?. = -` ; = :. , ; :.
+ ' &lt; ,  : ; , `' ; = `: = , zwxaaqny? vE(|5waeT|! = '. , &lt; '` = ; '`
+`- &gt; ^  ' &gt; _ ._ = , ': ; _ su3eou3on -To]1I1nu?/`: '` _ ! -` &gt; = -.
+.' = =  - &gt; ^  ' &lt; , `' = ^ +T)Z?s{Zx;` FCTF{|FTcvr .  = &gt; '. ; ^ '-
+-: = , `: = ; `' &gt; , .: = ^ ,cr?r7Y(3J  '(c|ovvT?({ -` ; = :- , ^ :'
+`: ; : `_ ; , .: ^ , .' ; , .*&lt;r?J}zfe-  1?r*7[{s&lt;T -- , &lt; '` , ; :-
+`' &lt; _  : &gt; : .: = ^ .: = ^  TrsJz!J3e:  )Fz?v}f7*)^-- , &lt; -  = &gt; '.
+`- &gt; =  - &lt; ,  - &gt; , ._ &gt; ^  Fcz/Tsf3u_  _Tv(u7vJF1c'' ^ &lt; -` ; &gt; '`
+`- ; =  . ; =  . &lt; , `' &gt; =  ?*czIs?jl`  ',3Lf3I}|i*'' = &gt; -. &gt; = '.
+`' ; ^ `' ^ ^ `' ; ^ .: = _  !/?vcr|pF   ^ 7|71j]t|!.. = = '. ; ^ '-
+`: ; _ `_ ; _ .: = ^ -_ ^ ,  :*7scfyqr`  _ ,|ee[5enT.. , = _. ^ = '-
+.: ; _  _ &lt; _ ._ &gt; _ '_ &gt; ,  -_{)|xu5-' `: _`a5eeux{'' _ &lt; :` , ; '-
+.' ; ^  ' &lt; ,  ' + ^ .' &gt; ^  _ 3uf|IE : `_ &gt; ?xnS5nF`  , ! -  = ; :-
+`' &gt; =  - &gt; ;  ' ! = `' ; =  _ Fn1eY2 _  _ + -5ty]yI.  ^ &gt; -  ; ; :.
+`' &lt; = `: ; = .: &gt; ^ -' = =  , )ynkao '  _ +  JEjx2o   ^ ^ '- = ; '.
+`' &lt; ; `_ &gt; , ._ = ^ '_ = ^ `, uwY2EOhT ., &lt; -_xwStot- ^ = :. ^ ; -.
+`' ; ;  : &lt; , -, &gt; ^ '_ ; _ .'^@Eh&amp;$#@I `_ &gt; `tb]2xk@T , + _. = = ''
+`_ ; ,  ' &gt; ^  ' + , `' ; ,  .s#ASXKK%C  : &gt; `r&amp;%m%@hE^. &lt; -  = ^ :-
+,, r &lt; '= r ! ': r &lt; '_ &lt; ; `'*@$hAmU#w '= r :.d@#&amp;m5S!= r _: + ! ,,
+= +`^^ r +''&lt; c =_.r +-'&gt; r :.}@hA@@m%HT.! !`::|#K%$KG!&gt;-:&lt; ! ^,.r ;
+ &gt;`', &gt; ', &lt; =' &gt; ^. &lt; ^' &lt; -!m@d6@##@8E ; _' ,z@X@@@@n + =. &gt; ;`.=
+&lt; '; &lt;''&lt; &lt;`.&gt; &lt; `&gt; ^' + := ,h@Hk&amp;#@@%m{ &lt; `= ')@%@@#A9 '^ &lt; -; &lt; .&gt;
+ .&lt; =' + =, ! _, ;..= :_`,_ (@@&amp;8@@@Hm9, ,` ; `!XAm@#XU&lt; ,- + __ ! `
+'&lt; ,_ + -+ &gt;- ! =. ! =- &lt; :7X@8VG#A,u#[- .' ,` &gt;Ub%@@@%/- &lt; `; ;- &gt;
+; '^ &gt;- ! := +''&lt; ;. ! ';s6@mGw4#@| [@nr=z*,/c&gt;T$kX$&amp;$@}'. &gt; _, +  !
+ .&gt; __ +` &lt; ', &gt;  ; _: tH@XEe2m@@dsTu}JFr7vzC*?umpG8H##U!&lt; '^ ;` !
+ = `^ ,' &lt;  &lt; -^ ^. ;`LpXXmmmGdku|?+i**|;?T!Fs!E6j@@@#@@sL* ^  &gt;  =
+;  =  = :_ ;` ;  ; -, ++;FTL}c?(&lt;|Fr|s/FcL7r7|!3%]q$@@Xy?,r  ;  = .=
+  =  _  ^  , .- '` ^  _  ^  , := ^_ ^` !.`! _z,*}PH%pe= &gt;  ,  _ `. -
+</code></pre>
+</details>
+
+<hr />
+<h2>⚡ // TERMINAL EXECUTION (ONE-LINER)</h2>
+<p>Print this artwork directly inside your local terminal with authentic retro <strong>green phosphor CRT ANSI colors</strong>:</p>
+<pre><code class="language-bash"># Clone and run directly:
+git clone https://github.com/&lt;your-username&gt;/&lt;your-repo&gt;.git
+cd &lt;your-repo&gt;
+./view_art.sh
+</code></pre>
+<p>Or pipe directly into your terminal or <code>.bashrc</code> / <code>.zshrc</code> / <code>fastfetch</code> startup banner:</p>
+<pre><code class="language-bash"># Output full-body Braille art
+cat assets/braille_fullbody.txt
+
+# Or execute with CRT phosphor green ANSI color styling:
+curl -sSL https://raw.githubusercontent.com/&lt;your-username&gt;/&lt;your-repo&gt;/main/view_art.sh | bash
+</code></pre>
+<hr />
+<h2>🛰️ // DEVELOPER TELEMETRY &amp; BIO</h2>
+<pre><code class="language-yaml"># SYSTEM IDENTITY &amp; HARDWARE SPECS
+user:
+  handle: &quot;OPERATOR_09&quot;
+  role: &quot;Full-Stack Engineer // Systems Architect // Cyberpunk Rice Enthusiast&quot;
+  location: &quot;Neo-Shinjuku // Serilingampalle&quot;
+  status: &quot;ONLINE // COMPILING&quot;
+  alignment: &quot;Chaotic Modular&quot;
+
+runtime:
+  os: &quot;Arch Linux / Hyprland / NixOS&quot;
+  shell: &quot;zsh + tmux + starship&quot;
+  editor: &quot;Neovim (NVIM v0.10+ / Lua)&quot;
+  terminal: &quot;Kitty // Alacritty [Phosphor Green Palette #75b870]&quot;
+
+telemetry:
+  uptime: &quot;99.98%&quot;
+  caffeine_intake: &quot;420 mg / day&quot;
+  lines_committed_this_cycle: &quot;13,370&quot;
+</code></pre>
+<hr />
+<h2>⚔️ // PRIMARY ARSENAL (TECH STACK)</h2>
+<div align="center">
+
+<table>
+<thead>
+<tr>
+  <th style="text-align:left">CATEGORY</th>
+  <th style="text-align:left">ARSENAL / TECHNOLOGIES</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td style="text-align:left"><strong>Core Systems</strong></td>
+  <td style="text-align:left"><code>Rust</code> • <code>Go</code> • <code>C++20</code> • <code>C</code> • <code>Python 3.12</code> • <code>Zig</code></td>
+</tr>
+<tr>
+  <td style="text-align:left"><strong>Web &amp; Interfaces</strong></td>
+  <td style="text-align:left"><code>TypeScript</code> • <code>Next.js</code> • <code>React</code> • <code>TailwindCSS</code> • <code>Node.js</code> • <code>Wasm</code></td>
+</tr>
+<tr>
+  <td style="text-align:left"><strong>Data &amp; Cloud</strong></td>
+  <td style="text-align:left"><code>PostgreSQL</code> • <code>Redis</code> • <code>Docker</code> • <code>Kubernetes</code> • <code>AWS</code> • <code>Kafka</code></td>
+</tr>
+<tr>
+  <td style="text-align:left"><strong>Security &amp; Low-Level</strong></td>
+  <td style="text-align:left"><code>eBPF</code> • <code>GDB</code> • <code>Wireshark</code> • <code>Reverse Engineering</code> • <code>Linux Kernel</code></td>
+</tr>
+</tbody>
+</table>
+<p><br/></p>
+<!-- Matching phosphor green badges -->
+
+<p><img src="https://img.shields.io/badge/RUST-000000?style=for-the-badge&logo=rust&logoColor=75b870" alt="Rust"/>
+<img src="https://img.shields.io/badge/PYTHON-000000?style=for-the-badge&logo=python&logoColor=75b870" alt="Python"/>
+<img src="https://img.shields.io/badge/TYPESCRIPT-000000?style=for-the-badge&logo=typescript&logoColor=75b870" alt="TypeScript"/>
+<img src="https://img.shields.io/badge/GO-000000?style=for-the-badge&logo=go&logoColor=75b870" alt="Go"/>
+<img src="https://img.shields.io/badge/DOCKER-000000?style=for-the-badge&logo=docker&logoColor=75b870" alt="Docker"/>
+<img src="https://img.shields.io/badge/NEOVIM-000000?style=for-the-badge&logo=neovim&logoColor=75b870" alt="Neovim"/>
+<img src="https://img.shields.io/badge/ARCH%20LINUX-000000?style=for-the-badge&logo=archlinux&logoColor=75b870" alt="Arch Linux"/></p>
+</div>
+
+<hr />
+<h2>🎯 // ACTIVE DIRECTIVES &amp; MISSIONS</h2>
+<ul>
+<li>[x] Vectorize retro anime artwork into crisp resolution-independent SVG code.</li>
+<li>[x] Complete figure from head to toe with full legs, patterned stockings, and heeled boots.</li>
+<li>[x] Extend phosphor green graph grid across entire canvas edge-to-edge from left to right.</li>
+<li>[x] Encode sub-pixel Braille dot matrix for seamless monospace terminal and GitHub display.</li>
+<li>[ ] Construct zero-overhead terminal UI dashboard with <code>ratatui</code>.</li>
+<li>[ ] Optimize compile times down to sub-100ms on kernel modules.</li>
+</ul>
+<hr />
+<h2>🔬 // HOW IT WAS ENGINEERED (NO IMAGE UPLOADS)</h2>
+<p>Instead of relying on a lossy raster image upload (PNG/JPG to an external CDN), this repository uses three code-native approaches:</p>
+<ol>
+<li><p><strong>Full-Body Resolution-Independent SVG Vector Graphic (<code>assets/cyberpunk_fullbody.svg</code>):</strong></p>
+<ul>
+<li>The entire standing artwork is vectorized into Bézier curves and mathematical paths using <code>potrace</code>.</li>
+<li>The phosphor green <code>#75b870</code> background and engineering graph grid span 100% of the viewBox from left to right edge-to-edge with no empty margins.</li>
+<li>Complete figure from hair bun to stylish boots on the perspective grid floor.</li>
+<li>Stored directly as text/XML in the Git repository.</li>
+</ul>
+</li>
+<li><p><strong>8-Dot Unicode Braille Matrix (<code>assets/braille_fullbody.txt</code>):</strong></p>
+<ul>
+<li>Each Braille cell (<code>U+2800</code> to <code>U+28FF</code>) contains a $2 	imes 4$ subpixel dot grid.</li>
+<li>This provides $8	imes$ the resolution of standard ASCII art, preserving the fine halftone dithering on the tommy gun drum, stockings, and facial expression.</li>
+<li>Spaces use <code>U+2800</code> (Braille blank) to ensure bulletproof monospace alignment across all operating system fonts.</li>
+</ul>
+</li>
+<li><p><strong>7-Bit Monospace ASCII Character Art (<code>assets/ascii_art.txt</code>):</strong></p>
+<ul>
+<li>Fallback character gradient using perceptual luminance density (<code>$@B%8&amp;WM#*...</code>).</li>
+</ul>
+</li>
+</ol>
+<hr />
+<h2>📦 // HOW TO USE IN YOUR GITHUB PROFILE</h2>
+<p>To use this as your personal <strong>GitHub Profile README</strong>:</p>
+<ol>
+<li>Create a public repository on GitHub named after your username:<br />
+<code>https://github.com/&lt;your-username&gt;/&lt;your-username&gt;</code></li>
+<li>Clone your repository:<pre><code class="language-bash">git clone https://github.com/&lt;your-username&gt;/&lt;your-username&gt;.git
+cd &lt;your-username&gt;
+</code></pre>
+</li>
+<li>Copy <code>README.md</code>, <code>view_art.sh</code>, and the <code>assets/</code> directory into your repository:<pre><code class="language-bash">cp -r /path/to/downloaded/* .
+</code></pre>
+</li>
+<li>Commit and push:<pre><code class="language-bash">git add .
+git commit -m &quot;feat: add cyberpunk retro grid girl profile&quot;
+git push origin main
+</code></pre>
+</li>
+<li>Visit your GitHub profile page — your custom retro terminal README is live!</li>
+</ol>
+<hr />
+<div align="center">
+
+<pre><code class="language-text">[EOF] // TRANSMISSION TERMINATED // SESSION CLOSED
+</code></pre>
+<p><sub>Crafted with code, vectors, and Unicode glyphs. Designed for dark mode &amp; light mode GitHub interfaces.</sub></p>
+</div>
+
+
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

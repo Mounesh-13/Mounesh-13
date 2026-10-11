@@ -1,2 +1,7 @@
-*.pyc
+uploads/
+*.pbm
+boots_crop.png
 __pycache__/
+.DS_Store
+.config/
+.sudo_as_admin_successful
