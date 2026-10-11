@@ -8568,4 +8568,100 @@ c0 -5 -4 -10 -10 -10 -5 0 -10 5 -10 10 0 6 5 10 10 10 6 0 10 -4 10 -10z"/>
 -4 -11 -10z"/>
 <path d="M8398 2453 c12 -2 30 -2 40 0 9 3 -1 5 -23 4 -22 0 -30 -2 -17 -4z"/>
 </g>
+
+<defs>
+  <!-- Red Laser / Terminator Glow -->
+  <filter id="terminator-glow" x="-30%" y="-30%" width="160%" height="160%">
+    <feGaussianBlur stdDeviation="4" result="blur1" />
+    <feGaussianBlur stdDeviation="1" result="blur2" />
+    <feMerge>
+      <feMergeNode in="blur1" />
+      <feMergeNode in="blur2" />
+      <feMergeNode in="SourceGraphic" />
+    </feMerge>
+  </filter>
+
+  <!-- Green Matrix Phosphor Glow -->
+  <filter id="matrix-glow" x="-20%" y="-20%" width="140%" height="140%">
+    <feGaussianBlur stdDeviation="2.5" result="blur" />
+    <feMerge>
+      <feMergeNode in="blur" />
+      <feMergeNode in="SourceGraphic" />
+    </feMerge>
+  </filter>
+
+  <!-- Dark Horror Vignette Gradient -->
+  <radialGradient id="vignette" cx="50%" cy="48%" r="65%">
+    <stop offset="45%" stop-color="#000000" stop-opacity="0"/>
+    <stop offset="85%" stop-color="#020803" stop-opacity="0.6"/>
+    <stop offset="100%" stop-color="#000000" stop-opacity="0.92"/>
+  </radialGradient>
+
+  <!-- Terminator HUD Red Target Line Gradient -->
+  <linearGradient id="laser-line" x1="0%" y1="0%" x2="100%" y2="0%">
+    <stop offset="0%" stop-color="#ff0000" stop-opacity="0"/>
+    <stop offset="30%" stop-color="#ff1a1a" stop-opacity="0.8"/>
+    <stop offset="50%" stop-color="#ff4444" stop-opacity="1"/>
+    <stop offset="70%" stop-color="#ff1a1a" stop-opacity="0.8"/>
+    <stop offset="100%" stop-color="#ff0000" stop-opacity="0"/>
+  </linearGradient>
+</defs>
+
+<!-- Dark Horror Vignette Overlay -->
+<rect width="100%" height="100%" fill="url(#vignette)" pointer-events="none"/>
+
+<!-- Matrix Digital Rain Faint Streams (Top Left & Top Right Margins) -->
+<g font-family="'Courier New', monospace" font-size="10" font-weight="700" fill="#2d6e32" opacity="0.75" letter-spacing="1">
+  <text x="28" y="90">01001001</text>
+  <text x="28" y="106">D E A D</text>
+  <text x="28" y="122">01100101</text>
+  <text x="28" y="138">666.0.01</text>
+  <text x="28" y="154">S O U L S</text>
+
+  <text x="750" y="90">11010010</text>
+  <text x="750" y="106">N O N E</text>
+  <text x="750" y="122">A L I V E</text>
+  <text x="750" y="138">00000000</text>
+  <text x="750" y="154">E R R O R</text>
+</g>
+
+<!-- Terminator Cyber HUD Target Crosshairs & Telemetry -->
+<g font-family="'Courier New', monospace" font-size="11" font-weight="900" letter-spacing="2">
+  <!-- Top Left HUD -->
+  <text x="28" y="38" fill="#75b870">// SYSTEM: OVERRIDDEN</text>
+  <text x="28" y="54" fill="#ff2222" filter="url(#terminator-glow)">[!] BIO-SCAN: 0 BPM [FLATLINE]</text>
+  
+  <!-- Top Right HUD -->
+  <text x="820" y="38" text-anchor="end" fill="#ff1a1a" filter="url(#terminator-glow)">THREAT: CRITICAL [T-800]</text>
+  <text x="820" y="54" text-anchor="end" fill="#75b870">TARGET: ACQUIRED</text>
+
+  <!-- Tactical Reticle Top Left Corner -->
+  <path d="M 24 20 L 48 20 M 24 20 L 24 44" stroke="#ff2222" stroke-width="2" fill="none"/>
+  <!-- Tactical Reticle Top Right Corner -->
+  <path d="M 824 20 L 800 20 M 824 20 L 824 44" stroke="#ff2222" stroke-width="2" fill="none"/>
+  <!-- Tactical Reticle Bottom Left Corner -->
+  <path d="M 24 1244 L 48 1244 M 24 1244 L 24 1220" stroke="#ff2222" stroke-width="2" fill="none"/>
+  <!-- Tactical Reticle Bottom Right Corner -->
+  <path d="M 824 1244 L 800 1244 M 824 1244 L 824 1220" stroke="#ff2222" stroke-width="2" fill="none"/>
+</g>
+
+<!-- CAPTION PLATE AT THE BOTTOM OF THE IMAGE: 'I see dead people' -->
+<g transform="translate(424, 1205)">
+  <!-- Glow Backing Box -->
+  <rect x="-260" y="-32" width="520" height="48" fill="#030603" fill-opacity="0.94" rx="4" stroke="#ff1a1a" stroke-width="1.6" filter="url(#terminator-glow)"/>
+  
+  <!-- Subtle inner border -->
+  <rect x="-256" y="-28" width="512" height="40" fill="none" stroke="#330000" stroke-width="1"/>
+
+  <!-- Scary Caption: 'I see dead people' -->
+  <text x="0" y="-3" text-anchor="middle" font-family="'Courier New', monospace" font-size="22" font-weight="900" fill="#ffffff" letter-spacing="7" filter="url(#terminator-glow)">
+    I SEE DEAD PEOPLE
+  </text>
+  
+  <!-- Terminator/Matrix sub-caption -->
+  <text x="0" y="11" text-anchor="middle" font-family="'Courier New', monospace" font-size="8.5" font-weight="800" fill="#ff4d4d" letter-spacing="4">
+    // MATRIX-TERMINATOR PROTOCOL: ACTIVE //
+  </text>
+</g>
+
 </svg>
